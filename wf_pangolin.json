@@ -1,0 +1,8 @@
+{
+  "pangolin_workflow.alignment_file_name": "20250421-1700_alignment",
+  "pangolin_workflow.expanded_lineage": false,
+  "pangolin_workflow.input_fasta": "example_data/20250421-1700.fasta.gz",
+  "pangolin_workflow.output_alignment": false,
+  "pangolin_workflow.output_file_name": "20250421-1700_lineage.tsv",
+  "pangolin_workflow.run_pangolin.docker_image": "staphb/pangolin:4.3.1-pdata-1.33"
+}

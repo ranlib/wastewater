@@ -1,0 +1,9 @@
+{
+    "NextcladeWorkflow.RunNextclade.cpu": 1,
+    "NextcladeWorkflow.RunNextclade.dataset_name": "sars-cov-2",
+    "NextcladeWorkflow.RunNextclade.disk_size": 50,
+    "NextcladeWorkflow.RunNextclade.docker": "nextstrain/nextclade:3.13.0",
+    "NextcladeWorkflow.RunNextclade.memory": "2G",
+    "NextcladeWorkflow.RunNextclade.verbosity": "warn",
+    "NextcladeWorkflow.fasta": "example_data/20250421-1700.fasta.gz"
+}
