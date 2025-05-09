@@ -1,3 +1,19 @@
+trim_galore:
+	womtool validate --inputs wf_trim_galore.json wf_trim_galore.wdl
+	miniwdl check wf_trim_galore.wdl
+
+trim_galore_docu:
+	wdl-aid wf_trim_galore.wdl -o wf_trim_galore.md
+	womtool graph wf_trim_galore.wdl > wf_trim_galore.dot
+	dot -Tpdf -o wf_trim_galore.pdf wf_trim_galore.dot
+	dot -Tjpeg -o wf_trim_galore.jpeg wf_trim_galore.dot
+	rm wf_trim_galore.dot
+
+run_trim_galore:
+	miniwdl run --debug --dir test-trim_galore --cfg miniwdl_production.cfg --input wf_trim_galore.json wf_trim_galore.wdl
+
+
+
 fastp:
 	womtool validate --inputs wf_fastp.json wf_fastp.wdl
 	miniwdl check wf_fastp.wdl
