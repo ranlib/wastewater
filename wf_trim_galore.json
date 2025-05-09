@@ -1,0 +1,6 @@
+{
+    "trim_galore_workflow.input_fastq": "example_data/SRR13182925_1.fastq.gz",
+    "trim_galore_workflow.input_fastq_2": "example_data/SRR13182925_2.fastq.gz",
+    "trim_galore_workflow.is_paired_end": true,
+    "trim_galore_workflow.fastqc_additional_options": "'--extract --threads 8'",
+}
