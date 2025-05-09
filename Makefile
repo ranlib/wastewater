@@ -1,3 +1,18 @@
+minimap2:
+	womtool validate --inputs wf_minimap2.json wf_minimap2.wdl
+	miniwdl check wf_minimap2.wdl
+
+minimap2_docu:
+	wdl-aid wf_minimap2.wdl -o wf_minimap2.md
+	womtool graph wf_minimap2.wdl > wf_minimap2.dot
+	dot -Tpdf -o wf_minimap2.pdf wf_minimap2.dot
+	dot -Tjpeg -o wf_minimap2.jpeg wf_minimap2.dot
+	rm wf_minimap2.dot
+
+run_minimap2:
+	miniwdl run --debug --dir test-minimap2 --cfg miniwdl_production.cfg --input wf_minimap2.json wf_minimap2.wdl
+
+
 nextclade:
 	womtool validate --inputs wf_nextclade.json wf_nextclade.wdl
 	miniwdl check wf_nextclade.wdl
