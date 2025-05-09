@@ -1,0 +1,7 @@
+{
+    "wf_fastqc.forwardReads": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_1.fq.gz",
+    "wf_fastqc.reverseReads": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_2.fq.gz",
+    "wf_fastqc.limits": "/home/dieterbest/Analysis/varpipe4/configuration/fastqc_limits.txt",
+    "wf_fastqc.threads": 4
+}
+
