@@ -1,0 +1,8 @@
+{
+  "fastp_workflow.input_reads1": ["example_data/SRR13182925_1.fastq.gz"],
+  "fastp_workflow.input_reads2": ["example_data/SRR13182925_2.fastq.gz"],
+  "fastp_workflow.sample_id_prefix": "SRR13182925",
+  "fastp_workflow.threads": 4,
+  "fastp_workflow.q": 25,
+  "fastp_workflow.unqualified_percent_limit": 30
+}

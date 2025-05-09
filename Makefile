@@ -1,3 +1,19 @@
+fastp:
+	womtool validate --inputs wf_fastp.json wf_fastp.wdl
+	miniwdl check wf_fastp.wdl
+
+fastp_docu:
+	wdl-aid wf_fastp.wdl -o wf_fastp.md
+	womtool graph wf_fastp.wdl > wf_fastp.dot
+	dot -Tpdf -o wf_fastp.pdf wf_fastp.dot
+	dot -Tjpeg -o wf_fastp.jpeg wf_fastp.dot
+	rm wf_fastp.dot
+
+run_fastp:
+	miniwdl run --debug --dir test-fastp --cfg miniwdl_production.cfg --input wf_fastp.json wf_fastp.wdl
+
+
+
 minimap2:
 	womtool validate --inputs wf_minimap2.json wf_minimap2.wdl
 	miniwdl check wf_minimap2.wdl
@@ -11,6 +27,7 @@ minimap2_docu:
 
 run_minimap2:
 	miniwdl run --debug --dir test-minimap2 --cfg miniwdl_production.cfg --input wf_minimap2.json wf_minimap2.wdl
+
 
 
 nextclade:
