@@ -12,6 +12,7 @@ nextclade_docu:
 run_nextclade:
 	miniwdl run --debug --dir test-nextclade --cfg miniwdl_production.cfg --input wf_nextclade.json wf_nextclade.wdl
 
+
 pangolin:
 	womtool validate --inputs wf_pangolin.json wf_pangolin.wdl
 	miniwdl check wf_pangolin.wdl
@@ -25,4 +26,20 @@ pangolin_docu:
 
 run_pangolin:
 	miniwdl run --debug --dir test-pangolin --cfg miniwdl_production.cfg --input wf_pangolin.json wf_pangolin.wdl
+
+
+
+seqkit:
+	womtool validate --inputs wf_seqkit.json wf_seqkit.wdl
+	miniwdl check wf_seqkit.wdl
+
+seqkit_docu:
+	wdl-aid wf_seqkit.wdl -o wf_seqkit.md
+	womtool graph wf_seqkit.wdl > wf_seqkit.dot
+	dot -Tpdf -o wf_seqkit.pdf wf_seqkit.dot
+	dot -Tjpeg -o wf_seqkit.jpeg wf_seqkit.dot
+	rm wf_seqkit.dot
+
+run_seqkit:
+	miniwdl run --debug --dir test-seqkit --cfg miniwdl_production.cfg --input wf_seqkit.json wf_seqkit.wdl
 
