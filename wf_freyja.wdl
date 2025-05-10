@@ -87,7 +87,7 @@ task freyja_demix_task {
   }
 }
 
-workflow freyja_analysis_workflow {
+workflow freyja_workflow {
   input {
     File input_bam_file
     String freyja_docker_image
