@@ -10,6 +10,7 @@ workflow wf_minimap2 {
     File read2
     String outputPrefix
     String samplename
+    String docker = "staphb/minimap2:2.29"
     Int threads = 1
   }
 
@@ -17,7 +18,8 @@ workflow wf_minimap2 {
     input:
     referenceFile = reference,
     outputPrefix = outputPrefix,
-    cores = threads
+    cores = threads,
+    docker = docker
   }
   
   call minimap2.Mapping {
@@ -29,7 +31,8 @@ workflow wf_minimap2 {
     presetOption = "sr",
     addMDTagToSam = true,
     outputSam = true,
-    cores = threads
+    cores = threads,
+    docker = docker
   }
 
   call sort_sam.task_sortSam {

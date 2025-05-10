@@ -13,11 +13,11 @@ task Indexing {
     Int cores = 1
     String memory = "4G"
     Int timeMinutes = 10
-    String dockerImage = "staphb/minimap2:2.28"
+    String docker = "staphb/minimap2:2.29"
   }
   
   command {
-    set -e
+    set -euxo pipefail
     mkdir -p "$(dirname ~{outputPrefix})"
     minimap2 \
     ~{true="-H" false="" useHomopolymerCompressedKmer} \
@@ -37,7 +37,7 @@ task Indexing {
     cpu: cores
     memory: memory
     time_minutes: timeMinutes
-    docker: dockerImage
+    docker: docker
   }
   
   parameter_meta {
@@ -51,7 +51,7 @@ task Indexing {
     cores: {description: "The number of cores to be used.", category: "advanced"}
     memory: {description: "The amount of memory available to the job.", category: "advanced"}
     timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
-    dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+    docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
     
     # outputs
     indexFile: {description: "Indexed reference file."}
@@ -83,13 +83,13 @@ task Mapping {
     Int cores = 4
     String memory = "30G"
     Int timeMinutes = 1 + ceil(size(queryFile1, "G") * 200 / cores)
-    String dockerImage = "staphb/minimap2:2.28"
+    String docker = "staphb/minimap2:2.29"
   }
 
   String output_file = outputPrefix + ".sam"
   
   command <<<
-    set -xe
+    set -euxo pipefail
     mkdir -p "$(dirname ~{outputPrefix})"
     read_group="@RG\\tID:~{outputPrefix}\\tSM:~{outputPrefix}"
     minimap2 \
@@ -124,7 +124,7 @@ task Mapping {
     cpu: cores
     memory: memory
     time_minutes: timeMinutes
-    docker: dockerImage
+    docker: docker
   }
 
   parameter_meta {
@@ -147,7 +147,7 @@ task Mapping {
     cores: {description: "The number of cores to be used.", category: "advanced"}
     memory: {description: "The amount of memory available to the job.", category: "advanced"}
     timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
-    dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+    docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
     
     # outputs
     alignmentFile: {description: "Mapping and alignment between collections of dna sequences file."}
