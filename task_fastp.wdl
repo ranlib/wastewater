@@ -1,6 +1,6 @@
 version 1.0
 
-task fastp_task {
+task task_fastp {
   input {
     File read1
     File read2
@@ -33,39 +33,39 @@ task fastp_task {
     String docker_image = "biocontainers/fastp:v0.20.1_cv1"
   }
 
-  command {
+  command <<<
     fastp \
-    -i ${read1} \
-    ${true=' -I ' false="" defined(read2)} ${read2} \
-    -o ${outprefix}.clean.1.fastq.gz \
-    ${if defined(read2) && output_read2 then '-O ' + outprefix + '.clean.2.fastq.gz' else ''} \
-    -j ${outprefix}.json \
-    -h ${outprefix}.html \
-    -a ${adapter_sequence} \
-    ${if defined(read2) then '-A ' + adapter_sequence_r2 else ''} \
-    -t ${threads} \
-    -f ${trim_front1} \
-    -t ${trim_tail1} \
-    ${if defined(read2) then '-F ' + trim_front2 else ''} \
-    ${if defined(read2) then '-T ' + trim_tail2 else ''} \
-    ${if cutadapt_compatible then '--cutadapt_compatible' else ''} \
-    ${if umi then '--umi' else ''} \
-    ${if umi then '--umi_loc ' + umi_loc else ''} \
-    ${if umi then '--umi_len ' + umi_len else ''} \
-    ${if disable_quality_filtering then '--disable_quality_filtering' else ''} \
-    -q ${q} \
-    -u ${unqualified_percent_limit} \
-    -n ${n_base_limit} \
-    ${if low_complexity_filter > 0 then '--low_complexity_filter' else ''} \
-    ${if low_complexity_filter > 0 then '-z ' + complexity_threshold else ''} \
-    ${if filter_by_index then '--filter_by_index' else ''} \
-    ${if correction then '--correction' else ''} \
-    ${if proper_pairs_only then '--proper_pairs_only' else ''} \
-    ${if merge_pe then '--merge_pe' else ''} \
-    ${if !output_read1 then '--dont_output_read1' else ''} \
-    ${if defined(read2) && !output_read2 then '--dont_output_read2' else ''} \
-    ${extra_options}
-  }
+    -i ~{read1} \
+    ~{true=' -I ' false="" defined(read2)} ~{read2} \
+    -o ~{outprefix}.clean.1.fastq.gz \
+    ~{if defined(read2) && output_read2 then '-O ' + outprefix + '.clean.2.fastq.gz' else ''} \
+    -j ~{outprefix}.json \
+    -h ~{outprefix}.html \
+    -a ~{adapter_sequence} \
+    ~{if defined(read2) then '-A ' + adapter_sequence_r2 else ''} \
+    -t ~{threads} \
+    -f ~{trim_front1} \
+    -t ~{trim_tail1} \
+    ~{if defined(read2) then '-F ' + trim_front2 else ''} \
+    ~{if defined(read2) then '-T ' + trim_tail2 else ''} \
+    ~{if cutadapt_compatible then '--cutadapt_compatible' else ''} \
+    ~{if umi then '--umi' else ''} \
+    ~{if umi then '--umi_loc ' + umi_loc else ''} \
+    ~{if umi then '--umi_len ' + umi_len else ''} \
+    ~{if disable_quality_filtering then '--disable_quality_filtering' else ''} \
+    -q ~{q} \
+    -u ~{unqualified_percent_limit} \
+    -n ~{n_base_limit} \
+    ~{if low_complexity_filter > 0 then '--low_complexity_filter' else ''} \
+    ~{if low_complexity_filter > 0 then '-z ' + complexity_threshold else ''} \
+    ~{if filter_by_index then '--filter_by_index' else ''} \
+    ~{if correction then '--correction' else ''} \
+    ~{if proper_pairs_only then '--proper_pairs_only' else ''} \
+    ~{if merge_pe then '--merge_pe' else ''} \
+    ~{if !output_read1 then '--dont_output_read1' else ''} \
+    ~{if defined(read2) && !output_read2 then '--dont_output_read2' else ''} \
+    ~{extra_options}
+  >>>
 
   output {
     File clean_read1 = "${outprefix}.clean.1.fastq.gz"

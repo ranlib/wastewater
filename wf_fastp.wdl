@@ -1,8 +1,8 @@
 version 1.0
 
-import "task_fastp.wdl" as fastp_task
+import "task_fastp.wdl" as fastp
 
-workflow fastp_workflow {
+workflow wf_fastp {
   input {
     Array[File] input_reads1
     Array[File] input_reads2
@@ -35,7 +35,7 @@ workflow fastp_workflow {
   }
 
   scatter (i in range(length(input_reads1))) {
-    call fastp_task.fastp_task {
+    call fastp.task_fastp {
       input:
       read1 = input_reads1[i],
       read2 = input_reads2[i],
@@ -70,9 +70,9 @@ workflow fastp_workflow {
   }
 
   output {
-    Array[File] clean_reads1 = fastp_task.clean_read1
-    Array[File?] clean_reads2 = fastp_task.clean_read2
-    Array[File] reports_json = fastp_task.report_json
-    Array[File] reports_html = fastp_task.report_html
+    Array[File] clean_reads1 = task_fastp.clean_read1
+    Array[File?] clean_reads2 = task_fastp.clean_read2
+    Array[File] reports_json = task_fastp.report_json
+    Array[File] reports_html = task_fastp.report_html
   }
 }
