@@ -1,3 +1,19 @@
+wastewater:
+	womtool validate --inputs wf_wastewater.json wf_wastewater.wdl
+	miniwdl check wf_wastewater.wdl
+
+wastewater_docu:
+	wdl-aid wf_wastewater.wdl -o wf_wastewater.md
+	womtool graph wf_wastewater.wdl > wf_wastewater.dot
+	dot -Tpdf -o wf_wastewater.pdf wf_wastewater.dot
+	dot -Tjpeg -o wf_wastewater.jpeg wf_wastewater.dot
+	rm wf_wastewater.dot
+
+run_wastewater:
+	miniwdl run --debug --dir test-wastewater --cfg miniwdl_production.cfg --input wf_wastewater.json wf_wastewater.wdl
+
+
+
 freyja:
 	womtool validate --inputs wf_freyja.json wf_freyja.wdl
 	miniwdl check wf_freyja.wdl
