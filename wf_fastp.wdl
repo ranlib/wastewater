@@ -71,7 +71,7 @@ workflow wf_fastp {
 
   output {
     Array[File] clean_reads1 = task_fastp.clean_read1
-    Array[File?] clean_reads2 = task_fastp.clean_read2
+    Array[File] clean_reads2 = task_fastp.clean_read2
     Array[File] reports_json = task_fastp.report_json
     Array[File] reports_html = task_fastp.report_html
   }

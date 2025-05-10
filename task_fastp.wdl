@@ -69,7 +69,7 @@ task task_fastp {
 
   output {
     File clean_read1 = "${outprefix}.clean.1.fastq.gz"
-    File? clean_read2 = "${outprefix}.clean.2.fastq.gz"
+    File clean_read2 = "${outprefix}.clean.2.fastq.gz"
     File report_json = "${outprefix}.json"
     File report_html = "${outprefix}.html"
   }
