@@ -1,0 +1,7 @@
+{
+    "freyja_analysis_workflow.freyja_docker_image": "staphb/freyja:1.5.3-04_10_2025-01-44-2025-04-21",
+    "freyja_analysis_workflow.input_bam_file": "test-minimap2/_LAST/out/bam/SRR13182925.sorted.bam",
+    "freyja_analysis_workflow.reference_fasta": "references/NC_045512_Hu-1.fasta",
+    "freyja_analysis_workflow.depths_file": "depths.tsv",
+    "freyja_analysis_workflow.variants_file": "variants.tsv"
+}

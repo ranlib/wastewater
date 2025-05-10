@@ -1,3 +1,19 @@
+freyja:
+	womtool validate --inputs wf_freyja.json wf_freyja.wdl
+	miniwdl check wf_freyja.wdl
+
+freyja_docu:
+	wdl-aid wf_freyja.wdl -o wf_freyja.md
+	womtool graph wf_freyja.wdl > wf_freyja.dot
+	dot -Tpdf -o wf_freyja.pdf wf_freyja.dot
+	dot -Tjpeg -o wf_freyja.jpeg wf_freyja.dot
+	rm wf_freyja.dot
+
+run_freyja:
+	miniwdl run --debug --dir test-freyja --cfg miniwdl_production.cfg --input wf_freyja.json wf_freyja.wdl
+
+
+
 trim_galore:
 	womtool validate --inputs wf_trim_galore.json wf_trim_galore.wdl
 	miniwdl check wf_trim_galore.wdl

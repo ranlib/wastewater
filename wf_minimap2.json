@@ -15,7 +15,7 @@
     "wf_minimap2.outputPrefix": "SRR13182925",
     "wf_minimap2.read1": "example_data/SRR13182925_1.fastq.gz",
     "wf_minimap2.read2": "example_data/SRR13182925_1.fastq.gz",
-    "wf_minimap2.reference": "references/MN908947.3.fa",
+    "wf_minimap2.reference": "references/NC_045512_Hu-1.fasta",
     "wf_minimap2.samplename": "SRR13182925",
     "wf_minimap2.threads": 1
 }
