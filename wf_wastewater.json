@@ -5,7 +5,7 @@
     "wastewater.docker_freyja": "staphb/freyja:1.5.3-04_10_2025-01-44-2025-04-21",
     "wastewater.docker_multiqc": "multiqc/multiqc:v1.28",
     "wastewater.read1": "example_data/SRR13182925_1.fastq.gz",
-    "wastewater.read2": "example_data/SRR13182925_1.fastq.gz",
+    "wastewater.read2": "example_data/SRR13182925_2.fastq.gz",
     "wastewater.reference": "references/NC_045512_Hu-1.fasta",
     "wastewater.samplename": "SRR13182925"
 }

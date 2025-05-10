@@ -62,8 +62,7 @@ workflow wastewater {
   task_fastqc.forwardData,
   task_fastqc.reverseData,
   task_fastp.report_json,
-  freyja_workflow.lineage_abundances,
-  freyja_workflow.variants_output
+  freyja_workflow.lineage_abundances
   ])
   ])
   call multiqc.task_multiqc {
