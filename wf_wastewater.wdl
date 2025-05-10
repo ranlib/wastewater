@@ -37,8 +37,8 @@ workflow wastewater {
   
   call minimap2.wf_minimap2 {
     input:
-    read1 = read1,
-    read2 = read2,
+    read1 = task_fastp.clean_read1,
+    read2 = task_fastp.clean_read2,
     reference = reference,
     samplename = samplename,
     threads = threads,
@@ -76,6 +76,12 @@ workflow wastewater {
     File forwardHtml = task_fastqc.forwardHtml
     File reverseHtml = task_fastqc.reverseHtml
 
+    # fastp
+    File clean_reads1 = task_fastp.clean_read1
+    File clean_reads2 = task_fastp.clean_read2
+    File reports_json = task_fastp.report_json
+    File reports_html = task_fastp.report_html
+    
     # freyja
     File variants_output = freyja_workflow.variants_output
     File depths_output = freyja_workflow.depths_output
