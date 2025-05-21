@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-
-import pandas as pd
+"""
+Take aquascope directory, loop over tsv files, create report.
+"""
 import os
-import argparse
 import sys
+import argparse
+import datetime
+import pandas
+
 
 def get_tsv_files_in_directory(directory_path):
     """
@@ -31,45 +35,61 @@ def get_tsv_files_in_directory(directory_path):
             tsv_files.append(full_path)
     return tsv_files
 
+
 if __name__ == "__main__":
-    # Create the parser
-    parser = argparse.ArgumentParser(
-        description="Finds all .tsv files in a specified directory."
-    )
-
-    # Add the directory argument
-    parser.add_argument(
-        "directory",
-        type=str,
-        help="The path to the directory to scan for .tsv files."
-    )
-
-    # Parse the arguments
+    parser = argparse.ArgumentParser(description="Finds all .tsv files in a specified directory.")
+    parser.add_argument("--directory", "-f", type=str, required=True, help="The path to the directory to scan for .tsv files.")
+    parser.add_argument("--output", "-o", type=str, required=True, help="The name of the output tsv file.")
+    parser.add_argument("--debug", "-d", action="store_true", help="Turn on debugging output.")
     args = parser.parse_args()
 
-    # Get the directory path from the parsed arguments
     directory_to_scan = args.directory
 
-    # Get the list of TSV files
     tsv_file_list = get_tsv_files_in_directory(directory_to_scan)
 
-    if tsv_file_list:
-        print("Found .tsv files:")
-        for file_path in tsv_file_list:
-            print(file_path)
-    else:
-        print(f"No .tsv files found in '{directory_to_scan}'.")
+    if args.debug:
+        if tsv_file_list:
+            print("Found .tsv files:")
+            for file_path in tsv_file_list:
+                print(file_path)
+        else:
+            print(f"No .tsv files found in '{directory_to_scan}'.")
 
-    # Example of how you might use pandas with the list of files:
-    # print("\n--- Processing first 5 rows of each TSV file (if any) ---")
-    # for tsv_file in tsv_file_list:
-    #     try:
-    #         # Read the TSV file using pandas
-    #         df = pd.read_csv(tsv_file, sep='\t')
-    #         print(f"\n--- Data from {os.path.basename(tsv_file)} ---")
-    #         # Display the first 5 rows of the DataFrame
-    #         print(df.head())
-    #     except pd.errors.EmptyDataError:
-    #         print(f"Warning: {os.path.basename(tsv_file)} is empty and cannot be read by pandas.", file=sys.stderr)
-    #     except Exception as e:
-    #         print(f"Error reading {os.path.basename(tsv_file)}: {e}", file=sys.stderr)
+    d_list = []
+    for tsv_file in tsv_file_list:
+        base_name = os.path.basename(tsv_file)
+        name_without_extension, _ = os.path.splitext(base_name)
+        timestamp = os.path.getmtime(tsv_file)
+        datetime_object = datetime.datetime.fromtimestamp(timestamp)
+        pandas_timestamp = pandas.Timestamp(datetime_object)
+        try:
+            dd = pandas.read_csv(tsv_file, sep="\t", skiprows=1).transpose()
+            dd.columns = dd.iloc[0]
+            dd = dd[1:]
+            dd = dd.reset_index(drop=True)
+            dd["sample"] = name_without_extension
+            dd["timestamp"] = pandas_timestamp
+            dd["lineages"] = dd["lineages"].str.split()
+            dd["abundances"] = dd["abundances"].str.split()
+            dd = dd.explode(["lineages", "abundances"])
+            d_list.append(dd)
+        except pandas.errors.EmptyDataError:
+            print(f"Warning: {os.path.basename(tsv_file)} is empty and cannot be read by pandas.", file=sys.stderr)
+        except Exception as e:
+            print(f"Error reading {os.path.basename(tsv_file)}: {e}", file=sys.stderr)
+
+    ddd = pandas.concat(d_list)
+    ddd = ddd.reset_index(drop=True)
+
+    cols = ["source", "jurisdiction_policy_rid", "reporting_jurisdiction", "wwtp_jurisdiction", "key_plot_with_pcr", "sample_collect_date", "sample_id", "qc_threshold", "dominant_voc", "aggregated_lineage", "lineage", "abundance", "time_analyzed", "time_analyzed_tz"]
+    df = pandas.DataFrame(columns=cols)
+    df["source"] = ["CDPH_CovidSeq"] * len(ddd.index)
+    df["reporting_jurisdiction"] = ["ca"] * len(ddd.index)
+    df["wwtp_jurisdiction"] = ["ca"] * len(ddd.index)
+    df["sample_id"] = ddd["sample"].copy()
+    df["lineage"] = ddd["lineages"].copy()
+    df["abundance"] = ddd["abundances"].copy()
+    df["time_analyzed"] = ddd["timestamp"].copy()
+    df = df.reset_index(drop=True)
+    df.to_csv(args.output, sep="\t", index=False)
+    df.to_excel(args.output.replace(".tsv", ".xlsx"), index=False)
