@@ -4,6 +4,8 @@ task task_sortSam {
   input {
     String samplename
     File insam
+    String docker = "broadinstitute/gatk:4.6.1.0"
+    String memory = "16GB"
   }
   
   command <<<
@@ -20,7 +22,7 @@ task task_sortSam {
   }
 
   runtime {
-    docker: "broadinstitute/gatk:4.6.1.0"
-    memory: "16GB"
+    docker: docker
+    memory: memory
   }
 }
