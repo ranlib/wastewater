@@ -1,3 +1,6 @@
+#
+# wastewater
+#
 wastewater:
 	womtool validate --inputs wf_wastewater.json wf_wastewater.wdl
 	miniwdl check wf_wastewater.wdl
@@ -12,8 +15,29 @@ wastewater_docu:
 run_wastewater:
 	miniwdl run --debug --dir test-wastewater --cfg miniwdl_production.cfg --input wf_wastewater.json wf_wastewater.wdl
 
+#
+# wastewater_pathogen
+#
+wastewater_pathogen:
+	womtool validate --inputs wf_wastewater_pathogen.json wf_wastewater_pathogen.wdl
+	miniwdl check wf_wastewater_pathogen.wdl
 
+wastewater_pathogen_docu:
+	wdl-aid wf_wastewater_pathogen.wdl -o wf_wastewater_pathogen.md
+	womtool graph wf_wastewater_pathogen.wdl > wf_wastewater_pathogen.dot
+	dot -Tpdf -o wf_wastewater_pathogen.pdf wf_wastewater_pathogen.dot
+	dot -Tjpeg -o wf_wastewater_pathogen.jpeg wf_wastewater_pathogen.dot
+	rm wf_wastewater_pathogen.dot
 
+run_wastewater_pathogen:
+	miniwdl run --debug --dir test-wastewater_pathogen --cfg miniwdl_production.cfg --input wf_wastewater_pathogen.json wf_wastewater_pathogen.wdl
+
+run_wastewater_pathogen_mpxv:
+	miniwdl run --debug --dir test-wastewater_pathogen_mpxv --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_mpxv.json wf_wastewater_pathogen.wdl
+
+#
+# freyja
+#
 freyja:
 	womtool validate --inputs wf_freyja.json wf_freyja.wdl
 	miniwdl check wf_freyja.wdl
@@ -29,7 +53,9 @@ run_freyja:
 	miniwdl run --debug --dir test-freyja --cfg miniwdl_production.cfg --input wf_freyja.json wf_freyja.wdl
 
 
-
+#
+# trim_galore
+#
 trim_galore:
 	womtool validate --inputs wf_trim_galore.json wf_trim_galore.wdl
 	miniwdl check wf_trim_galore.wdl
@@ -45,7 +71,9 @@ run_trim_galore:
 	miniwdl run --debug --dir test-trim_galore --cfg miniwdl_production.cfg --input wf_trim_galore.json wf_trim_galore.wdl
 
 
-
+#
+# fastp
+#
 fastp:
 	womtool validate --inputs wf_fastp.json wf_fastp.wdl
 	miniwdl check wf_fastp.wdl
@@ -61,7 +89,9 @@ run_fastp:
 	miniwdl run --debug --dir test-fastp --cfg miniwdl_production.cfg --input wf_fastp.json wf_fastp.wdl
 
 
-
+#
+# minimap3
+#
 minimap2:
 	womtool validate --inputs wf_minimap2.json wf_minimap2.wdl
 	miniwdl check wf_minimap2.wdl
@@ -77,7 +107,9 @@ run_minimap2:
 	miniwdl run --debug --dir test-minimap2 --cfg miniwdl_production.cfg --input wf_minimap2.json wf_minimap2.wdl
 
 
-
+#
+# nextclade
+#
 nextclade:
 	womtool validate --inputs wf_nextclade.json wf_nextclade.wdl
 	miniwdl check wf_nextclade.wdl
@@ -93,6 +125,9 @@ run_nextclade:
 	miniwdl run --debug --dir test-nextclade --cfg miniwdl_production.cfg --input wf_nextclade.json wf_nextclade.wdl
 
 
+#
+# pangolin
+#
 pangolin:
 	womtool validate --inputs wf_pangolin.json wf_pangolin.wdl
 	miniwdl check wf_pangolin.wdl
@@ -109,6 +144,9 @@ run_pangolin:
 
 
 
+#
+# seqkit
+#
 seqkit:
 	womtool validate --inputs wf_seqkit.json wf_seqkit.wdl
 	miniwdl check wf_seqkit.wdl
