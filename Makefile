@@ -32,6 +32,12 @@ wastewater_pathogen_docu:
 run_wastewater_pathogen:
 	miniwdl run --debug --dir test-wastewater_pathogen --cfg miniwdl_production.cfg --input wf_wastewater_pathogen.json wf_wastewater_pathogen.wdl
 
+run_wastewater_pathogen_measles:
+	miniwdl run --debug --dir test-wastewater_pathogen_measles --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_measles.json wf_wastewater_pathogen.wdl
+
+run_wastewater_pathogen_measles_pure:
+	miniwdl run --debug --dir test-wastewater_pathogen_measles_pure --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_measles_pure.json wf_wastewater_pathogen.wdl
+
 run_wastewater_pathogen_mpxv:
 	miniwdl run --debug --dir test-wastewater_pathogen_mpxv --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_mpxv.json wf_wastewater_pathogen.wdl
 
