@@ -167,3 +167,20 @@ seqkit_docu:
 run_seqkit:
 	miniwdl run --debug --dir test-seqkit --cfg miniwdl_production.cfg --input wf_seqkit.json wf_seqkit.wdl
 
+#
+# centrifuge
+#
+centrifuge:
+	womtool validate --inputs wf_centrifuge_large.json wf_centrifuge.wdl
+	miniwdl check wf_centrifuge.wdl
+
+centrifuge_docu:
+	wdl-aid wf_centrifuge.wdl -o wf_centrifuge.md
+	womtool graph wf_centrifuge.wdl > wf_centrifuge.dot
+	dot -Tpdf -o wf_centrifuge.pdf wf_centrifuge.dot
+	dot -Tjpeg -o wf_centrifuge.jpeg wf_centrifuge.dot
+	rm wf_centrifuge.dot
+
+run_centrifuge:
+	miniwdl run --debug --dir test-centrifuge --cfg miniwdl_production.cfg --input wf_centrifuge_large.json wf_centrifuge.wdl
+

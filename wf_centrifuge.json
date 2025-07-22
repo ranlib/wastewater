@@ -1,0 +1,17 @@
+{
+    "wf_centrifuge.read1": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_1.fq.gz",
+    "wf_centrifuge.read2": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_2.fq.gz",
+    "wf_centrifuge.task_centrifuge.docker": "dbest/centrifuge:v1.0.4.2",
+    "wf_centrifuge.task_kreport.docker": "dbest/centrifuge:v1.0.4.2",
+    "wf_centrifuge.indexFiles": [
+        "/home/dieterbest/Analysis/varpipe4/centrifuge_database/index/test.1.cf",
+        "/home/dieterbest/Analysis/varpipe4/centrifuge_database/index/test.2.cf",
+        "/home/dieterbest/Analysis/varpipe4/centrifuge_database/index/test.3.cf",
+        "/home/dieterbest/Analysis/varpipe4/centrifuge_database/index/test.4.cf"
+    ],
+    "wf_centrifuge.memory": "64GB",
+    "wf_centrifuge.disk_multiplier": 20,
+    "wf_centrifuge.disk_size": 100,
+    "wf_centrifuge.samplename": "ERR552797",
+    "wf_centrifuge.threads": 24
+}
