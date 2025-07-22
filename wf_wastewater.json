@@ -1,8 +1,8 @@
 {
     "wastewater.docker_fastqc": "staphb/fastqc:0.12.1",
-    "wastewater.docker_fastp": "biocontainers/fastp:v0.20.1_cv1",
-    "wastewater.docker_minimap2": "staphb/minimap2:2.29",
-    "wastewater.docker_freyja": "staphb/freyja:1.5.3-04_10_2025-01-44-2025-04-21",
+    "wastewater.docker_fastp": "dbest/fastp:v1.0.1",
+    "wastewater.docker_minimap2": "dbest/minimap2:2.30",
+    "wastewater.docker_freyja": "dbest/freyja:v2.0.0",
     "wastewater.docker_multiqc": "multiqc/multiqc:v1.28",
     "wastewater.read1": "example_data/SRR13182925_1.fastq.gz",
     "wastewater.read2": "example_data/SRR13182925_2.fastq.gz",
