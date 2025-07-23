@@ -35,13 +35,18 @@ task task_qualimap_bamqc {
   command <<<
     set -euxo pipefail
     qualimap bamqc \
-      -bam ~{bam} \
-      -outdir ~{samplename}_qualimap_report \
-      -nt ~{threads}
+    -bam ~{bam} \
+    -outdir ~{samplename}_qualimap_report \
+    -nt ~{threads} \
+    -outformat PDF:HTML \
+    --sequencing-protocol non-strand-specific \
+    --collect-overlap-pairs
   >>>
 
   output {
     File report = "${samplename}_qualimap_report/qualimapReport.html"
+    File genome_results = "${samplename}_qualimap_report/genome_results.txt"
+    Array[File] raw_data_qualimapReport = glob("${samplename}_qualimap_report/raw_data_qualimapReport/*")
   }
 
   runtime {
