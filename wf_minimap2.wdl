@@ -11,6 +11,7 @@ workflow wf_minimap2 {
     String outputPrefix
     String samplename
     String docker = "staphb/minimap2:2.29"
+    String memory = "32G"
     Int threads = 1
   }
 
@@ -19,6 +20,7 @@ workflow wf_minimap2 {
     referenceFile = reference,
     outputPrefix = outputPrefix,
     cores = threads,
+    memory = memory,
     docker = docker
   }
   
@@ -32,6 +34,7 @@ workflow wf_minimap2 {
     addMDTagToSam = true,
     outputSam = true,
     cores = threads,
+    memory = memory,
     docker = docker
   }
 
