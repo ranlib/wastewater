@@ -1,0 +1,9 @@
+{
+    "wf_ivar.raw_bam": "/home/dbest/Software/wastewater/SRR13182925/aquascope/work/45/fb72f06e300b8088fd8ef908e5fa97/SRR13182925.bam",
+    "wf_ivar.primers_bed": "/home/dbest/Software/wastewater/primers/SARS-CoV-2.scheme.bed",
+    "wf_ivar.sample_name": "SRR13182925",
+    "wf_ivar.min_trimmed_length": 50,
+    "wf_ivar.min_quality_score": 20,
+    "wf_ivar.include_reads_with_no_primers": true,
+    "wf_ivar.keep_reads_qc_fail": true
+}

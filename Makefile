@@ -201,3 +201,20 @@ qualimap_docu:
 run_qualimap:
 	miniwdl run --debug --dir test-qualimap --cfg miniwdl_production.cfg --input wf_qualimap.json wf_qualimap.wdl
 
+#
+# ivar
+#
+ivar:
+	womtool validate --inputs wf_ivar.json wf_ivar.wdl
+	miniwdl check wf_ivar.wdl
+
+ivar_docu:
+	wdl-aid wf_ivar.wdl -o wf_ivar.md
+	womtool graph wf_ivar.wdl > wf_ivar.dot
+	dot -Tpdf -o wf_ivar.pdf wf_ivar.dot
+	dot -Tjpeg -o wf_ivar.jpeg wf_ivar.dot
+	rm wf_ivar.dot
+
+run_ivar:
+	miniwdl run --debug --dir test-ivar --cfg miniwdl_production.cfg --input wf_ivar.json wf_ivar.wdl
+
