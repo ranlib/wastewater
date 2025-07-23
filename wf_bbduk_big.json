@@ -1,0 +1,11 @@
+{
+    "wf_bbduk.contamination": "/home/dbest/Analysis/varpipe4/contamination/bbduk_contamination.tar.gz",
+    "wf_bbduk.forwardReads": "/home/dbest/Analysis/varpipe4/data/ERR552797_30percent_1.fq.gz",
+    "wf_bbduk.reverseReads": "/home/dbest/Analysis/varpipe4/data/ERR552797_30percent_2.fq.gz",
+    "wf_bbduk.samplename": "ERR552797",
+    "wf_bbduk.threads": 16,
+    "wf_bbduk.task_bbduk.keep": true,
+    "wf_bbduk.task_bbduk.docker": "staphb/bbtools:39.01",
+    "wf_bbduk.memory": "64GB",
+    "wf_bbduk.disk_size": 100
+}

@@ -1,0 +1,11 @@
+{
+    "wf_bbduk.contamination": "/home/dieterbest/Analysis/varpipe4/contamination/bbduk_contamination_polyA.tar.gz",
+    "wf_bbduk.read1": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_1.fq.gz",
+    "wf_bbduk.read2": "/home/dieterbest/Analysis/varpipe4/data/ERR552797_30percent_2.fq.gz",
+    "wf_bbduk.samplename": "ERR552797",
+    "wf_bbduk.threads": 16,
+    "wf_bbduk.task_bbduk.keep": true,
+    "wf_bbduk.task_bbduk.docker": "staphb/bbtools:39.26",
+    "wf_bbduk.memory": "64GB",
+    "wf_bbduk.disk_size": 100
+}
