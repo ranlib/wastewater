@@ -13,6 +13,8 @@ workflow wf_centrifuge {
     String memory = "20GB"
     Int disk_size= 100
     Int disk_multiplier = 20
+    String docker_centrifuge = "dbest/centrifuge:v1.0.4.2"
+    String docker_kreport = "dbest/centrifuge:v1.0.4.2"
   }
   
   Int dynamic_disk_size = disk_multiplier*ceil(size(read1, "GiB"))
@@ -26,7 +28,8 @@ workflow wf_centrifuge {
     threads = threads,
     memory = memory,
     disk_size = disk_size_gb,
-    indexFiles = indexFiles
+    indexFiles = indexFiles,
+    docker = docker_centrifuge
   }
   
   call kreport.task_kreport {
@@ -35,7 +38,8 @@ workflow wf_centrifuge {
     samplename = samplename,
     memory = memory,
     disk_size = disk_size_gb,
-    indexFiles = indexFiles
+    indexFiles = indexFiles,
+    docker = docker_kreport
   }
   
   output {

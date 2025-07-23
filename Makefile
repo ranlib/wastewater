@@ -184,3 +184,20 @@ centrifuge_docu:
 run_centrifuge:
 	miniwdl run --debug --dir test-centrifuge --cfg miniwdl_production.cfg --input wf_centrifuge_large.json wf_centrifuge.wdl
 
+#
+# qualimap
+#
+qualimap:
+	womtool validate --inputs wf_qualimap.json wf_qualimap.wdl
+	miniwdl check wf_qualimap.wdl
+
+qualimap_docu:
+	wdl-aid wf_qualimap.wdl -o wf_qualimap.md
+	womtool graph wf_qualimap.wdl > wf_qualimap.dot
+	dot -Tpdf -o wf_qualimap.pdf wf_qualimap.dot
+	dot -Tjpeg -o wf_qualimap.jpeg wf_qualimap.dot
+	rm wf_qualimap.dot
+
+run_qualimap:
+	miniwdl run --debug --dir test-qualimap --cfg miniwdl_production.cfg --input wf_qualimap.json wf_qualimap.wdl
+
