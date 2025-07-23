@@ -1,9 +1,14 @@
 # wastewater
-
+## pipeline to analyze wastewater samples for a pathogen
 
 ## Inputs
 
 ### Required inputs
+<p name="wastewater.depth_cut_off">
+        <b>wastewater.depth_cut_off</b><br />
+        <i>Int &mdash; Default: None</i><br />
+        ???
+</p>
 <p name="wastewater.docker_fastp">
         <b>wastewater.docker_fastp</b><br />
         <i>String &mdash; Default: None</i><br />
@@ -29,25 +34,45 @@
         <i>String &mdash; Default: None</i><br />
         ???
 </p>
+<p name="wastewater.docker_qualimap">
+        <b>wastewater.docker_qualimap</b><br />
+        <i>String &mdash; Default: None</i><br />
+        ???
+</p>
+<p name="wastewater.indexFiles">
+        <b>wastewater.indexFiles</b><br />
+        <i>Array[File]+ &mdash; Default: None</i><br />
+        ???
+</p>
+<p name="wastewater.min_base_quality">
+        <b>wastewater.min_base_quality</b><br />
+        <i>Int &mdash; Default: None</i><br />
+        ???
+</p>
+<p name="wastewater.pathogen">
+        <b>wastewater.pathogen</b><br />
+        <i>String &mdash; Default: None</i><br />
+        Name of pathogen to be anlyzed
+</p>
 <p name="wastewater.read1">
         <b>wastewater.read1</b><br />
         <i>File &mdash; Default: None</i><br />
-        ???
+        Input fastq file with forward reads
 </p>
 <p name="wastewater.read2">
         <b>wastewater.read2</b><br />
         <i>File &mdash; Default: None</i><br />
-        ???
+        Input fastq file with reverse reads
 </p>
 <p name="wastewater.reference">
         <b>wastewater.reference</b><br />
         <i>File &mdash; Default: None</i><br />
-        ???
+        Reference sequence for pathogen to be anlyzed
 </p>
 <p name="wastewater.samplename">
         <b>wastewater.samplename</b><br />
         <i>String &mdash; Default: None</i><br />
-        ???
+        Sample name
 </p>
 
 ### Other common inputs
@@ -140,99 +165,24 @@
 ### Other inputs
 <details>
 <summary> Show/Hide </summary>
-<p name="wastewater.freyja_workflow.annotation_file">
-        <b>wastewater.freyja_workflow.annotation_file</b><br />
-        <i>File? &mdash; Default: None</i><br />
+<p name="wastewater.docker_centrifuge">
+        <b>wastewater.docker_centrifuge</b><br />
+        <i>String &mdash; Default: "dbest/centrifuge:v1.0.4.2"</i><br />
         ???
 </p>
-<p name="wastewater.freyja_workflow.demix_adaptive_lasso_penalty">
-        <b>wastewater.freyja_workflow.demix_adaptive_lasso_penalty</b><br />
-        <i>Float? &mdash; Default: None</i><br />
+<p name="wastewater.docker_kreport">
+        <b>wastewater.docker_kreport</b><br />
+        <i>String &mdash; Default: "dbest/centrifuge:v1.0.4.2"</i><br />
         ???
 </p>
-<p name="wastewater.freyja_workflow.demix_adaptive_lasso_threshold">
-        <b>wastewater.freyja_workflow.demix_adaptive_lasso_threshold</b><br />
-        <i>Float? &mdash; Default: None</i><br />
+<p name="wastewater.memory">
+        <b>wastewater.memory</b><br />
+        <i>String &mdash; Default: "32GB"</i><br />
         ???
 </p>
-<p name="wastewater.freyja_workflow.demix_barcode_file">
-        <b>wastewater.freyja_workflow.demix_barcode_file</b><br />
-        <i>File? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_confirmed_only">
-        <b>wastewater.freyja_workflow.demix_confirmed_only</b><br />
-        <i>Boolean? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_coverage_cutoff">
-        <b>wastewater.freyja_workflow.demix_coverage_cutoff</b><br />
-        <i>Int? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_depth_cutoff">
-        <b>wastewater.freyja_workflow.demix_depth_cutoff</b><br />
-        <i>Int? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_lineage_yaml">
-        <b>wastewater.freyja_workflow.demix_lineage_yaml</b><br />
-        <i>File? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_metadata_file">
-        <b>wastewater.freyja_workflow.demix_metadata_file</b><br />
-        <i>File? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_minimum_abundance">
-        <b>wastewater.freyja_workflow.demix_minimum_abundance</b><br />
-        <i>Float? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_output_file">
-        <b>wastewater.freyja_workflow.demix_output_file</b><br />
-        <i>String? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_pathogen_of_interest">
-        <b>wastewater.freyja_workflow.demix_pathogen_of_interest</b><br />
-        <i>String? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_region_of_interest_json">
-        <b>wastewater.freyja_workflow.demix_region_of_interest_json</b><br />
-        <i>String? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_relaxed_mrca">
-        <b>wastewater.freyja_workflow.demix_relaxed_mrca</b><br />
-        <i>Boolean? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_relaxed_threshold">
-        <b>wastewater.freyja_workflow.demix_relaxed_threshold</b><br />
-        <i>Float? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.demix_solver_type">
-        <b>wastewater.freyja_workflow.demix_solver_type</b><br />
-        <i>String? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.minimum_quality_score">
-        <b>wastewater.freyja_workflow.minimum_quality_score</b><br />
-        <i>Int? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.reference_genome_name">
-        <b>wastewater.freyja_workflow.reference_genome_name</b><br />
-        <i>String? &mdash; Default: None</i><br />
-        ???
-</p>
-<p name="wastewater.freyja_workflow.variant_threshold">
-        <b>wastewater.freyja_workflow.variant_threshold</b><br />
-        <i>Float? &mdash; Default: None</i><br />
+<p name="wastewater.run_centrifuge">
+        <b>wastewater.run_centrifuge</b><br />
+        <i>Boolean &mdash; Default: true</i><br />
         ???
 </p>
 <p name="wastewater.task_fastp.adapter_sequence">
@@ -360,11 +310,6 @@
         <i>Int &mdash; Default: 40</i><br />
         ???
 </p>
-<p name="wastewater.task_multiqc.docker">
-        <b>wastewater.task_multiqc.docker</b><br />
-        <i>String &mdash; Default: "multiqc/multiqc:v1.28"</i><br />
-        ???
-</p>
 <p name="wastewater.task_multiqc.memory">
         <b>wastewater.task_multiqc.memory</b><br />
         <i>String &mdash; Default: "8GB"</i><br />
@@ -375,6 +320,21 @@
         <i>Int &mdash; Default: 1</i><br />
         ???
 </p>
+<p name="wastewater.wf_centrifuge.disk_multiplier">
+        <b>wastewater.wf_centrifuge.disk_multiplier</b><br />
+        <i>Int &mdash; Default: 20</i><br />
+        ???
+</p>
+<p name="wastewater.wf_centrifuge.disk_size">
+        <b>wastewater.wf_centrifuge.disk_size</b><br />
+        <i>Int &mdash; Default: 100</i><br />
+        ???
+</p>
+<p name="wastewater.wf_centrifuge.memory">
+        <b>wastewater.wf_centrifuge.memory</b><br />
+        <i>String &mdash; Default: "20GB"</i><br />
+        ???
+</p>
 <p name="wastewater.wf_minimap2.Mapping.softClippingForSupplementaryAlignments">
         <b>wastewater.wf_minimap2.Mapping.softClippingForSupplementaryAlignments</b><br />
         <i>Boolean &mdash; Default: true</i><br />
@@ -383,11 +343,6 @@
 <p name="wastewater.wf_minimap2.Mapping.writeLongCigar">
         <b>wastewater.wf_minimap2.Mapping.writeLongCigar</b><br />
         <i>Boolean &mdash; Default: true</i><br />
-        ???
-</p>
-<p name="wastewater.wf_minimap2.memory">
-        <b>wastewater.wf_minimap2.memory</b><br />
-        <i>String &mdash; Default: "32G"</i><br />
         ???
 </p>
 <p name="wastewater.wf_minimap2.task_sortSam.docker">
@@ -403,9 +358,19 @@
 </details>
 
 ## Outputs
-<p name="wastewater.abundances">
-        <b>wastewater.abundances</b><br />
-        <i>File</i><br />
+<p name="wastewater.centrifuge_classification">
+        <b>wastewater.centrifuge_classification</b><br />
+        <i>File?</i><br />
+        ???
+</p>
+<p name="wastewater.centrifuge_kraken_style">
+        <b>wastewater.centrifuge_kraken_style</b><br />
+        <i>File?</i><br />
+        ???
+</p>
+<p name="wastewater.centrifuge_summary">
+        <b>wastewater.centrifuge_summary</b><br />
+        <i>File?</i><br />
         ???
 </p>
 <p name="wastewater.clean_reads1">
@@ -418,6 +383,11 @@
         <i>File</i><br />
         ???
 </p>
+<p name="wastewater.demixing_output">
+        <b>wastewater.demixing_output</b><br />
+        <i>File</i><br />
+        ???
+</p>
 <p name="wastewater.depths_output">
         <b>wastewater.depths_output</b><br />
         <i>File</i><br />
@@ -425,6 +395,11 @@
 </p>
 <p name="wastewater.forwardHtml">
         <b>wastewater.forwardHtml</b><br />
+        <i>File</i><br />
+        ???
+</p>
+<p name="wastewater.qc_report">
+        <b>wastewater.qc_report</b><br />
         <i>File</i><br />
         ???
 </p>
