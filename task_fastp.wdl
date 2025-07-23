@@ -30,10 +30,12 @@ task task_fastp {
     Boolean output_read1 = true
     Boolean output_read2 = true
     String extra_options = ""
-    String docker_image = "biocontainers/fastp:v0.20.1_cv1"
+    String docker_image = "dbest/fastp:v1.0.1"
+    String memory = "32GB"
   }
 
   command <<<
+    set -euxo pipefail
     fastp \
     -i ~{read1} \
     ~{true=' -I ' false="" defined(read2)} ~{read2} \
@@ -76,5 +78,7 @@ task task_fastp {
 
   runtime {
     docker: docker_image
+    memory: memory
+    cpu: threads
   }
 }

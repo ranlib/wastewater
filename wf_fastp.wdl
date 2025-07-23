@@ -31,7 +31,7 @@ workflow wf_fastp {
     Boolean output_read1 = true
     Boolean output_read2 = true
     String extra_options = ""
-    String docker_image = "biocontainers/fastp:v0.20.1_cv1"
+    String docker_image = "dbest/fastp:v1.0.1"
   }
 
   scatter (i in range(length(input_reads1))) {
