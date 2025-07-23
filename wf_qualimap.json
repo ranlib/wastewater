@@ -1,0 +1,7 @@
+{
+    "wf_qualimap_bamqc.bam": "/home/dbest/Software/wastewater/test-wastewater_pathogen/20250722_152408_wastewater/call-wf_minimap2/call-task_sortSam/out/outbam/SRR13182925.sorted.bam",
+    "wf_qualimap_bamqc.docker_qualimap": "staphb/qualimap:2.3",
+    "wf_qualimap_bamqc.memory": "32GB",
+    "wf_qualimap_bamqc.samplename": "SRR13182925",
+    "wf_qualimap_bamqc.threads": 1
+}
