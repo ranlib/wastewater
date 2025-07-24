@@ -29,7 +29,7 @@ task BgzipAndIndex {
         Int compressLevel = 1
         Int threads = 1
         String memory = "2GiB"
-        String dockerImage = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
+        String docker = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
     }
 
     String outputGz = outputDir + "/" + basename(inputFile) + ".gz"
@@ -57,7 +57,7 @@ task BgzipAndIndex {
         cpu: threads
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -66,7 +66,7 @@ task BgzipAndIndex {
         outputDir: {description: "The directory in which the output will be placed.", category: "required"}
         preset: {description: "The preset for the file (eg. vcf or bed) to be compressed and indexed.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         compressLevel: {description: "Set compression level.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
@@ -80,7 +80,7 @@ task DictAndFaidx {
     input {
         File inputFile
         String memory = "3GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     String outputFile = basename(inputFile)
@@ -102,7 +102,7 @@ task DictAndFaidx {
 
     runtime {
         memory: memory
-        docker: dockerImage
+        docker: docker
         
         cpu: 1
     }
@@ -111,7 +111,7 @@ task DictAndFaidx {
         # inputs
         inputFile: {description: "The input fasta file.", category: "required"}
         memory: {description: "The amount of memory available to the job.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         # outputs
         outputFasta: {description: "Fasta file that is co-located with the indexes"}
         outputFastaFai: {description: "Fasta index file for the outputFasta file."}
@@ -125,7 +125,7 @@ task Faidx {
         String outputDir
 
         String memory = "2GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -142,7 +142,7 @@ task Faidx {
 
     runtime {
         memory: memory
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -150,7 +150,7 @@ task Faidx {
         inputFile: {description: "The input fasta file.", category: "required"}
         outputDir: {description: "Output directory path.", category: "required"}
         memory: {description: "The amount of memory available to the job.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         outputIndex: {description: "Index of the input fasta file."}
@@ -173,7 +173,7 @@ task Fastq {
 
         Int threads = 1
         String memory = "1GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -202,7 +202,7 @@ task Fastq {
     runtime {
         cpu: threads
         memory: memory
-        docker: dockerImage
+        docker: docker
         
     }
 
@@ -220,7 +220,7 @@ task Fastq {
         compressionLevel: {description: "Set compression level when writing gz or bgzf fastq files.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         read1: {description: "Reads with the READ1 FLAG set."}
@@ -235,7 +235,7 @@ task FilterShortReadsBam {
         String outputPathBam
 
         String memory = "1GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     String outputPathBamIndex = sub(outputPathBam, "\.bam$", ".bai")
@@ -257,7 +257,7 @@ task FilterShortReadsBam {
     runtime {
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -265,7 +265,7 @@ task FilterShortReadsBam {
         bamFile: {description: "The bam file to process.", category: "required"}
         outputPathBam: {description: "The filtered bam file.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         filteredBam: {description: "BAM file filtered for short reads."}
@@ -281,7 +281,7 @@ task Flagstat {
         Int threads = 1
 
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -301,7 +301,7 @@ task Flagstat {
         cpu: threads
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -309,7 +309,7 @@ task Flagstat {
         inputBam: {description: "The BAM file for which statistics should be retrieved.", category: "required"}
         outputPath: {description: "The location the ouput should be written to.", category: "required"}
         memory: {description: "The amount of memory needed for the job.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
         # outputs
@@ -326,7 +326,7 @@ task Index {
         Int threads = 1
 
         String memory = "2GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     # Select_first is needed, otherwise womtool validate fails.
@@ -357,7 +357,7 @@ task Index {
         cpu: threads
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -365,7 +365,7 @@ task Index {
         bamFile: {description: "The BAM file for which an index should be made.", category: "required"}
         outputBamPath: {description: "The location where the BAM file should be written to. The index will appear alongside this link to the BAM file.", category: "common"}
         memory: {description: "The amount of memory needed for the job.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
         # outputs
@@ -380,7 +380,7 @@ task Markdup {
         String outputBamPath
         Int threads = 1
 
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -397,7 +397,7 @@ task Markdup {
 
     runtime {
         cpu: threads
-        docker: dockerImage
+        docker: docker
         
     }
 
@@ -405,7 +405,7 @@ task Markdup {
         # inputs
         inputBam: {description: "The BAM file to be processed.", category: "required"}
         outputBamPath: {description: "The location of the output BAM file.", category: "required"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
         # outputs
@@ -426,7 +426,7 @@ task Merge {
         # Use one thread per input + one for the output + one for merging
         Int threads = length(bamFiles) + 2
         String memory = "4GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     String indexPath = sub(outputBamPath, "\.bam$",".bai")
@@ -454,7 +454,7 @@ task Merge {
         cpu: threads
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -470,7 +470,7 @@ task Merge {
         
         threads: {description: "Number of threads to use.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         outputBam: {description: "Multiple BAM files merged into one."}
@@ -482,7 +482,7 @@ task Quickcheck {
     input {
         File inputBam
 
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -497,14 +497,14 @@ task Quickcheck {
     runtime {
         cpu: 1
         memory: "1GiB"
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
         # inputs
         inputBam: {description: "The input BAM/SAM/CRAM file.", category: "required"}
 
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         outputBam: {description: "The exact same input file, but use this so it is recognised as a dependent task."}
@@ -521,7 +521,7 @@ task Sort {
         Int memoryPerThreadGb = 4
         Int threads = 1
         Int memoryGb = 1 + threads * memoryPerThreadGb
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     # Select first needed as outputPath is optional input (bug in cromwell).
@@ -551,7 +551,7 @@ task Sort {
         cpu: threads
         memory: "~{memoryGb}GiB"
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -563,7 +563,7 @@ task Sort {
         memoryPerThreadGb: {description: "The amount of memory used per sort thread in gigabytes.", category: "advanced"}
         threads: {description: "The number of threads that will be used for this task.", category: "advanced"}
         memoryGb: {description: "The amount of memory available to the job in gigabytes.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         outputBam: {description: "Sorted BAM file."}
@@ -582,7 +582,7 @@ task Split {
 
         Int threads = 1
         String memory = "1GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     command {
@@ -607,7 +607,7 @@ task Split {
     runtime {
         cpu: threads
         memory: memory
-        docker: dockerImage
+        docker: docker
         
     }
 
@@ -634,7 +634,7 @@ task Tabix {
         String outputFilePath = basename(inputFile)
         String preset = "vcf"
 
-        String dockerImage = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
+        String docker = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
     }
 
     # FIXME: It is better to do the indexing on VCF creation.
@@ -657,7 +657,7 @@ task Tabix {
     runtime {
         memory: "2GiB"
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -665,7 +665,7 @@ task Tabix {
         inputFile: {description: "The file to be indexed.", category: "required"}
         outputFilePath: {description: "The location where the file should be written to. The index will appear alongside this link to the file.", category: "common"}
         preset: {description: "The preset for the file (eg. vcf or bed) to be indexed.", category: "common"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         indexedFile: {description: "Indexed input file."}
@@ -690,7 +690,7 @@ task View {
 
         Int threads = 1
         String memory = "1GiB"
-        String dockerImage = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.22.1"
     }
 
     String outputIndexPath = basename(outputFileName) + ".bai"
@@ -724,7 +724,7 @@ task View {
         cpu: threads
         memory: memory
         
-        docker: dockerImage
+        docker: docker
     }
 
     parameter_meta {
@@ -741,7 +741,7 @@ task View {
         targetFile: {description: "A BED file with regions to include", caegory: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
         outputBam: {description: "Processed input file."}
