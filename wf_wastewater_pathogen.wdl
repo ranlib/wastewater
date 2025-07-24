@@ -2,11 +2,12 @@ version 1.0
 
 import "task_fastqc.wdl" as fastqc
 import "task_fastp.wdl" as fastp
+import "wf_centrifuge.wdl" as centrifuge
 import "wf_minimap2.wdl" as minimap2
+import "wf_ivar.wdl" as ivar
+import "wf_qualimap.wdl" as qualimap
 import "task_freyja.wdl" as freyja
 import "task_multiqc.wdl" as multiqc
-import "wf_centrifuge.wdl" as centrifuge
-import "wf_qualimap.wdl" as qualimap
 
 workflow wastewater {
   input {
@@ -15,8 +16,8 @@ workflow wastewater {
     File reference
     Int depth_cut_off
     Int min_base_quality
-    String docker_centrifuge = "dbest/centrifuge:v1.0.4.2"
-    String docker_kreport = "dbest/centrifuge:v1.0.4.2"
+    String docker_centrifuge
+    String docker_kreport
     String docker_fastqc
     String docker_fastp
     String docker_minimap2
@@ -31,6 +32,12 @@ workflow wastewater {
     # centrifuge
     Boolean run_centrifuge = true
     Array[File]+ indexFiles
+    # ivar
+    File primers_bed
+    Int min_trimmed_length = 50
+    Int min_quality_score = 20
+    Boolean include_reads_with_no_primers = false
+    Boolean keep_reads_qc_fail = false
   }
 
   call fastqc.task_fastqc {
@@ -73,6 +80,17 @@ workflow wastewater {
     docker = docker_minimap2
   }
 
+  call ivar.wf_ivar {
+    input:
+    raw_bam = wf_minimap2.bam,
+    sample_name = samplename,
+    primers_bed = primers_bed,
+    min_trimmed_length = min_trimmed_length,
+    min_quality_score = min_quality_score,
+    include_reads_with_no_primers = include_reads_with_no_primers,
+    keep_reads_qc_fail = keep_reads_qc_fail
+  }
+  
   call qualimap.task_qualimap_bamqc {
     input:
     bam = wf_minimap2.bam,
@@ -94,19 +112,17 @@ workflow wastewater {
     docker = docker_freyja
   }
 
-  Array[File] allReports = flatten([
-  select_all([
+  Array[File] allReports = select_all([
   task_fastqc.forwardData,
   task_fastqc.reverseData,
   task_fastp.report_json,
   wf_centrifuge.krakenStyleTSV,
-  task_qualimap_bamqc.report,
   task_freyja.demixing_output
   ])
-  ])
+  Array[File] allReports1 = flatten([allReports, task_qualimap_bamqc.raw_data_qualimapReport])
   call multiqc.task_multiqc {
     input:
-    inputFiles = allReports,
+    inputFiles = allReports1,
     outputPrefix = samplename,
     docker = docker_multiqc
   }
@@ -126,6 +142,13 @@ workflow wastewater {
     File? centrifuge_classification = wf_centrifuge.classificationTSV
     File? centrifuge_kraken_style = wf_centrifuge.krakenStyleTSV
     File? centrifuge_summary = wf_centrifuge.summaryReportTSV
+
+    # ivar
+    File final_trimmed_bam = wf_ivar.final_trimmed_bam
+    File final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
+    File flagstat = wf_ivar.flagstat
+    File log_ivar = wf_ivar.log
+    File errlog_ivar = wf_ivar.errlog
 
     # qualimap
     File qc_report = task_qualimap_bamqc.report
