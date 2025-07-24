@@ -1,5 +1,7 @@
 version 1.0
 
+import "./task_samtools.wdl" as samtools
+
 task task_ivar_trim {
     input {
       File input_bam
@@ -69,8 +71,20 @@ workflow wf_ivar {
             amplicon_info_file = amplicon_information_file
     }
 
+    call samtools.Sort {
+      input:
+      inputBam = task_ivar_trim.trimmed_bam
+    }
+
+    call samtools.Flagstat {
+      input:
+      inputBam = Sort.outputBam
+    }
+
     output {
-      File final_trimmed_bam = task_ivar_trim.trimmed_bam
+      File final_trimmed_bam = Sort.outputBam
+      File final_trimmed_bam_index = Sort.outputBamIndex
+      File flagstat = Flagstat.flagstat
       File log = task_ivar_trim.log
       File errlog = task_ivar_trim.errlog
     }
