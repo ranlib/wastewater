@@ -15,7 +15,7 @@ task task_ivar_trim {
       Boolean keep_qc_fail = false
       File? amplicon_info_file # Optional: -f flag, primer pair information file
       String memory = "32GB"
-      String docker = "staphb/ivar:1.4.4"
+      String docker_ivar = "staphb/ivar:1.4.4"
     }
 
     command <<<
@@ -39,53 +39,62 @@ task task_ivar_trim {
     }
 
     runtime {
-        docker: docker
+        docker: docker_ivar
         memory: memory
         cpu: threads
     }
 }
 
 workflow wf_ivar {
-    input {
-        File raw_bam
-        File primers_bed
-        String sample_name
-        Int? min_trimmed_length
-        Int? min_quality_score
-        Int? sliding_window_size
-        Boolean include_reads_with_no_primers
-        Boolean keep_reads_qc_fail
-        File? amplicon_information_file
-    }
-
-    call task_ivar_trim {
-        input:
-            input_bam = raw_bam,
-            primer_bed = primers_bed,
-            sample_id = sample_name,
-            min_length = min_trimmed_length,
-            min_quality = min_quality_score,
-            sliding_window_width = sliding_window_size,
-            include_no_primers = include_reads_with_no_primers,
-            keep_qc_fail = keep_reads_qc_fail,
-            amplicon_info_file = amplicon_information_file
-    }
-
-    call samtools.Sort {
-      input:
-      inputBam = task_ivar_trim.trimmed_bam
-    }
-
-    call samtools.Flagstat {
-      input:
-      inputBam = Sort.outputBam
-    }
-
-    output {
-      File final_trimmed_bam = Sort.outputBam
-      File final_trimmed_bam_index = Sort.outputBamIndex
-      File flagstat = Flagstat.flagstat
-      File log = task_ivar_trim.log
-      File errlog = task_ivar_trim.errlog
-    }
+  input {
+    File raw_bam
+    File primers_bed
+    String sample_name
+    Int threads = 1
+    Int? min_trimmed_length
+    Int? min_quality_score
+    Int? sliding_window_size
+    Boolean include_reads_with_no_primers
+    Boolean keep_reads_qc_fail
+    File? amplicon_information_file
+    String docker_ivar = "staphb/ivar:1.4.4"
+    String docker_samtools = "dbest/samtools:v1.22.1"
+    
+  }
+  
+  call task_ivar_trim {
+    input:
+    input_bam = raw_bam,
+    primer_bed = primers_bed,
+    sample_id = sample_name,
+    min_length = min_trimmed_length,
+    min_quality = min_quality_score,
+    sliding_window_width = sliding_window_size,
+    include_no_primers = include_reads_with_no_primers,
+    keep_qc_fail = keep_reads_qc_fail,
+    amplicon_info_file = amplicon_information_file,
+    docker_ivar = docker_ivar
+  }
+  
+  call samtools.Sort {
+    input:
+    inputBam = task_ivar_trim.trimmed_bam,
+    threads = threads,
+    docker = docker_samtools
+  }
+  
+  call samtools.Flagstat {
+    input:
+    inputBam = Sort.outputBam,
+    threads = threads,
+    docker = docker_samtools
+  }
+  
+  output {
+    File final_trimmed_bam = Sort.outputBam
+    File final_trimmed_bam_index = Sort.outputBamIndex
+    File flagstat = Flagstat.flagstat
+    File log = task_ivar_trim.log
+    File errlog = task_ivar_trim.errlog
+  }
 }
