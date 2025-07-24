@@ -3,6 +3,7 @@ version 1.0
 import "task_fastqc.wdl" as fastqc
 import "task_fastp.wdl" as fastp
 import "wf_minimap2.wdl" as minimap2
+import "wf_ivar.wdl" as ivar
 import "wf_freyja.wdl" as freyja
 import "task_multiqc.wdl" as multiqc
 
@@ -14,11 +15,18 @@ workflow wastewater {
     String docker_fastqc
     String docker_fastp
     String docker_minimap2
+    String docker_samtools
     String docker_freyja
     String docker_multiqc
     String samplename
     Int threads = 1
-  }
+    # ivar
+    String primers_bed
+    Int min_trimmed_length = 50
+    Int min_quality_score = 20
+    Boolean include_reads_with_no_primers = false
+    Boolean keep_reads_qc_fail = false
+}
 
   call fastqc.task_fastqc {
     input:
@@ -46,11 +54,22 @@ workflow wastewater {
     docker = docker_minimap2
   }
   
+  call ivar.wf_ivar {
+    input:
+    raw_bam = wf_minimap2.bam,
+    sample_name = samplename,
+    primers_bed = primers_bed,
+    min_trimmed_length = min_trimmed_length,
+    min_quality_score = min_quality_score,
+    include_reads_with_no_primers = include_reads_with_no_primers,
+    keep_reads_qc_fail = keep_reads_qc_fail
+  }
+  
   String variants = samplename + "_variants.tsv"
   String depths = samplename + "_depths.tsv"
   call freyja.freyja_workflow {
     input:
-    input_bam_file = wf_minimap2.bam,
+    input_bam_file = wf_ivar.final_trimmed_bam,
     reference_fasta = reference,
     freyja_docker_image = docker_freyja,
     variants_file = variants,
@@ -81,7 +100,14 @@ workflow wastewater {
     File clean_reads2 = task_fastp.clean_read2
     File reports_json = task_fastp.report_json
     File reports_html = task_fastp.report_html
-    
+
+    # ivar
+    File final_trimmed_bam = wf_ivar.final_trimmed_bam
+    File final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
+    File flagstat = wf_ivar.flagstat
+    File log_ivar = wf_ivar.log
+    File errlog_ivar = wf_ivar.errlog
+
     # freyja
     File variants_output = freyja_workflow.variants_output
     File depths_output = freyja_workflow.depths_output
