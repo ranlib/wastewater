@@ -66,6 +66,7 @@ task task_fastp {
     ~{if merge_pe then '--merge_pe' else ''} \
     ~{if !output_read1 then '--dont_output_read1' else ''} \
     ~{if defined(read2) && !output_read2 then '--dont_output_read2' else ''} \
+    --detect_adapter_for_pe \
     ~{extra_options}
   >>>
 
