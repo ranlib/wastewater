@@ -531,7 +531,7 @@ task Quickcheck {
 task Sort {
     input {
         File inputBam
-        String outputPath = basename(inputBam, "\.bam") + ".sorted.bam"
+        String outputPath = basename(inputBam, ".bam") + ".sorted.bam"
         Boolean sortByName = false
         Int compressionLevel = 1
 
@@ -543,7 +543,7 @@ task Sort {
     }
 
     # Select first needed as outputPath is optional input (bug in cromwell).
-    String bamIndexPath = sub(select_first([outputPath]), "\.bam$", ".bai")
+    String bamIndexPath = sub(select_first([outputPath]), ".bam", ".bai")
 
     command {
         set -e
