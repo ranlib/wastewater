@@ -12,7 +12,6 @@ task Indexing {
     
     Int cores = 1
     String memory = "4G"
-    Int timeMinutes = 10
     String docker = "staphb/minimap2:2.29"
   }
   
@@ -36,7 +35,6 @@ task Indexing {
   runtime {
     cpu: cores
     memory: memory
-    time_minutes: timeMinutes
     docker: docker
   }
   
@@ -50,7 +48,6 @@ task Indexing {
     splitIndex: {description: "Split index for every ~NUM input bases.", category: "advanced"}
     cores: {description: "The number of cores to be used.", category: "advanced"}
     memory: {description: "The amount of memory available to the job.", category: "advanced"}
-    timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
     docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
     
     # outputs
@@ -82,7 +79,6 @@ task Mapping {
     
     Int cores = 4
     String memory = "30G"
-    Int timeMinutes = 1 + ceil(size(queryFile1, "G") * 200 / cores)
     String docker = "staphb/minimap2:2.29"
   }
 
@@ -123,7 +119,6 @@ task Mapping {
   runtime {
     cpu: cores
     memory: memory
-    time_minutes: timeMinutes
     docker: docker
   }
 
@@ -146,7 +141,6 @@ task Mapping {
     howToFindGTAG: {description: "How to find GT-AG. f:transcript strand, b:both strands, n:don't match GT-AG.", category: "common"}
     cores: {description: "The number of cores to be used.", category: "advanced"}
     memory: {description: "The amount of memory available to the job.", category: "advanced"}
-    timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
     docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
     
     # outputs
