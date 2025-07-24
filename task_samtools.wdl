@@ -29,7 +29,6 @@ task BgzipAndIndex {
         Int compressLevel = 1
         Int threads = 1
         String memory = "2GiB"
-        Int timeMinutes = 1 + ceil(size(inputFile, "GiB"))
         String dockerImage = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
     }
 
@@ -57,7 +56,7 @@ task BgzipAndIndex {
     runtime {
         cpu: threads
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -67,7 +66,6 @@ task BgzipAndIndex {
         outputDir: {description: "The directory in which the output will be placed.", category: "required"}
         preset: {description: "The preset for the file (eg. vcf or bed) to be compressed and indexed.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         compressLevel: {description: "Set compression level.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
@@ -82,7 +80,6 @@ task DictAndFaidx {
     input {
         File inputFile
         String memory = "3GiB"
-        Int timeMinutes = 5 + ceil(size(inputFile, "GiB") * 5)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -106,7 +103,7 @@ task DictAndFaidx {
     runtime {
         memory: memory
         docker: dockerImage
-        time_minutes: timeMinutes
+        
         cpu: 1
     }
 
@@ -114,7 +111,6 @@ task DictAndFaidx {
         # inputs
         inputFile: {description: "The input fasta file.", category: "required"}
         memory: {description: "The amount of memory available to the job.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         # outputs
         outputFasta: {description: "Fasta file that is co-located with the indexes"}
@@ -177,7 +173,6 @@ task Fastq {
 
         Int threads = 1
         String memory = "1GiB"
-        Int timeMinutes = 1 + ceil(size(inputBam, "GiB") * 2)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -208,7 +203,7 @@ task Fastq {
         cpu: threads
         memory: memory
         docker: dockerImage
-        time_minutes: timeMinutes
+        
     }
 
     parameter_meta {
@@ -225,7 +220,6 @@ task Fastq {
         compressionLevel: {description: "Set compression level when writing gz or bgzf fastq files.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
@@ -241,7 +235,6 @@ task FilterShortReadsBam {
         String outputPathBam
 
         String memory = "1GiB"
-        Int timeMinutes = 1 + ceil(size(bamFile, "GiB") * 8)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -263,7 +256,7 @@ task FilterShortReadsBam {
 
     runtime {
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -272,7 +265,6 @@ task FilterShortReadsBam {
         bamFile: {description: "The bam file to process.", category: "required"}
         outputPathBam: {description: "The filtered bam file.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
@@ -289,7 +281,6 @@ task Flagstat {
         Int threads = 1
 
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
-        Int timeMinutes = 1 + ceil(size(inputBam, "G"))
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -309,7 +300,7 @@ task Flagstat {
     runtime {
         cpu: threads
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -318,7 +309,6 @@ task Flagstat {
         inputBam: {description: "The BAM file for which statistics should be retrieved.", category: "required"}
         outputPath: {description: "The location the ouput should be written to.", category: "required"}
         memory: {description: "The amount of memory needed for the job.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
@@ -336,7 +326,6 @@ task Index {
         Int threads = 1
 
         String memory = "2GiB"
-        Int timeMinutes = 1 + ceil(size(bamFile, "GiB") * 4)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -367,7 +356,7 @@ task Index {
     runtime {
         cpu: threads
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -376,7 +365,6 @@ task Index {
         bamFile: {description: "The BAM file for which an index should be made.", category: "required"}
         outputBamPath: {description: "The location where the BAM file should be written to. The index will appear alongside this link to the BAM file.", category: "common"}
         memory: {description: "The amount of memory needed for the job.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
@@ -392,7 +380,6 @@ task Markdup {
         String outputBamPath
         Int threads = 1
 
-        Int timeMinutes = 1 + ceil(size(inputBam, "GiB") * 2)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -411,14 +398,13 @@ task Markdup {
     runtime {
         cpu: threads
         docker: dockerImage
-        time_minutes: timeMinutes
+        
     }
 
     parameter_meta {
         # inputs
         inputBam: {description: "The BAM file to be processed.", category: "required"}
         outputBamPath: {description: "The location of the output BAM file.", category: "required"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
 
@@ -440,7 +426,6 @@ task Merge {
         # Use one thread per input + one for the output + one for merging
         Int threads = length(bamFiles) + 2
         String memory = "4GiB"
-        Int timeMinutes = 1 + ceil(size(bamFiles, "GiB") * 4)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -468,7 +453,7 @@ task Merge {
     runtime {
         cpu: threads
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -485,7 +470,6 @@ task Merge {
         
         threads: {description: "Number of threads to use.", category: "common"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
@@ -512,7 +496,6 @@ task Quickcheck {
 
     runtime {
         cpu: 1
-        time_minutes: 5
         memory: "1GiB"
         docker: dockerImage
     }
@@ -538,7 +521,6 @@ task Sort {
         Int memoryPerThreadGb = 4
         Int threads = 1
         Int memoryGb = 1 + threads * memoryPerThreadGb
-        Int timeMinutes = 1 + ceil(size(inputBam, "GiB") * 3)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -568,7 +550,7 @@ task Sort {
     runtime {
         cpu: threads
         memory: "~{memoryGb}GiB"
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -581,7 +563,6 @@ task Sort {
         memoryPerThreadGb: {description: "The amount of memory used per sort thread in gigabytes.", category: "advanced"}
         threads: {description: "The number of threads that will be used for this task.", category: "advanced"}
         memoryGb: {description: "The amount of memory available to the job in gigabytes.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
@@ -601,7 +582,6 @@ task Split {
 
         Int threads = 1
         String memory = "1GiB"
-        Int timeMinutes = 1 + ceil(size(inputBam, "GiB") * 2)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -628,7 +608,7 @@ task Split {
         cpu: threads
         memory: memory
         docker: dockerImage
-        time_minutes: timeMinutes
+        
     }
 
     parameter_meta {
@@ -654,7 +634,6 @@ task Tabix {
         String outputFilePath = basename(inputFile)
         String preset = "vcf"
 
-        Int timeMinutes = 1 + ceil(size(inputFile, "GiB") * 2)
         String dockerImage = "quay.io/biocontainers/htslib:1.21--h566b1c6_1"
     }
 
@@ -677,7 +656,7 @@ task Tabix {
 
     runtime {
         memory: "2GiB"
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -686,7 +665,6 @@ task Tabix {
         inputFile: {description: "The file to be indexed.", category: "required"}
         outputFilePath: {description: "The location where the file should be written to. The index will appear alongside this link to the file.", category: "common"}
         preset: {description: "The preset for the file (eg. vcf or bed) to be indexed.", category: "common"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
@@ -712,7 +690,6 @@ task View {
 
         Int threads = 1
         String memory = "1GiB"
-        Int timeMinutes = 1 + ceil(size(inFile, "GiB") * 5)
         String dockerImage = "dbest/samtools:v1.22.1"
     }
 
@@ -746,7 +723,7 @@ task View {
     runtime {
         cpu: threads
         memory: memory
-        time_minutes: timeMinutes
+        
         docker: dockerImage
     }
 
@@ -764,7 +741,6 @@ task View {
         targetFile: {description: "A BED file with regions to include", caegory: "advanced"}
         threads: {description: "The number of threads to use.", category: "advanced"}
         memory: {description: "The amount of memory this job will use.", category: "advanced"}
-        timeMinutes: {description: "The maximum amount of time the job will run in minutes.", category: "advanced"}
         dockerImage: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
 
         # outputs
