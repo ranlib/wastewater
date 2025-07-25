@@ -56,7 +56,9 @@ workflow wastewater {
     input:
     forwardReads = read1,
     reverseReads = read2,
-    docker = docker_fastqc
+    docker = docker_fastqc,
+    threads = threads,
+    memory = memory
   }
 
   call fastp.task_fastp {
@@ -64,7 +66,9 @@ workflow wastewater {
     read1 = read1,
     read2 = read2,
     sample_id = samplename,
-    docker_image = docker_fastp
+    docker_image = docker_fastp,
+    threads = threads,
+    memory = memory
   }
   
   if ( run_centrifuge ) {
@@ -164,7 +168,8 @@ workflow wastewater {
     input:
     inputFiles = allReports1,
     outputPrefix = samplename,
-    docker = docker_multiqc
+    docker = docker_multiqc,
+    memory = memory
   }
   
   output {
