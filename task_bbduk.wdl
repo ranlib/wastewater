@@ -44,7 +44,7 @@ task task_bbduk {
     out2=~{samplename}_no_phix_2.fastq.gz \
     outm=~{samplename}_matched_phix.fq.gz \
     ref=~{phiX} \
-    stats=~{samplename}_phix.stats.txt
+    stats=~{samplename}_phix.stats.txt \
     k=31 \
     hdist=1 &> ~{samplename}_phix.log
 
