@@ -10,6 +10,7 @@ workflow wf_bbduk {
     File adapters
     File phiX
     File polyA
+    File primers
     String samplename
     String memory = "6GB"
     Int disk_size = 100
@@ -44,8 +45,8 @@ workflow wf_bbduk {
   }
 
   output {
-    File read1_clean = task_bbduk_illumina_primers.read1_clean
-    File read2_clean = task_bbduk_illumina_primers.read2_clean
+    File read1_clean = task_bbduk_illumina_primers.read1_no_primers
+    File read2_clean = task_bbduk_illumina_primers.read2_no_primers
     File adapter_stats = task_bbduk.adapter_stats
     File phiX_stats = task_bbduk.phiX_stats
     File polyA_stats = task_bbduk.polyA_stats
