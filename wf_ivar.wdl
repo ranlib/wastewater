@@ -90,10 +90,17 @@ workflow wf_ivar {
     docker = docker_samtools
   }
   
+  call samtools.Idxstats {
+    input:
+    inputBam = Sort.outputBam,
+    docker = docker_samtools
+  }
+  
   output {
     File final_trimmed_bam = Sort.outputBam
     File final_trimmed_bam_index = Sort.outputBamIndex
     File flagstat = Flagstat.flagstat
+    File idxstats = Idxstats.idxstats
     File log = task_ivar_trim.log
     File errlog = task_ivar_trim.errlog
   }
