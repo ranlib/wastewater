@@ -256,7 +256,6 @@ task FilterShortReadsBam {
 
     runtime {
         memory: memory
-        
         docker: docker
     }
 
@@ -300,7 +299,6 @@ task Flagstat {
     runtime {
         cpu: threads
         memory: memory
-        
         docker: docker
     }
 
@@ -314,6 +312,40 @@ task Flagstat {
 
         # outputs
         flagstat: {description: "The number of alignments for each FLAG type."}
+    }
+}
+
+task Idxstats {
+    input {
+        File inputBam
+        String outputPath = sub(inputBam, "\.bam$", ".idxstats")
+        String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
+        String docker = "dbest/samtools:v1.22.1"
+    }
+
+    command {
+        set -e
+        mkdir -p "$(dirname ~{outputPath})"
+        samtools idxstats ~{inputBam} > ~{outputPath}
+    }
+
+    output {
+        File idxstats = outputPath
+    }
+
+    runtime {
+      memory: memory
+      docker: docker
+    }
+
+    parameter_meta {
+        # inputs
+        inputBam: {description: "The BAM file for which statistics should be retrieved.", category: "required"}
+        outputPath: {description: "The location the ouput should be written to.", category: "required"}
+        memory: {description: "The amount of memory needed for the job.", category: "advanced"}
+        docker: {description: "The docker image used for this task. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
+        # outputs
+        idxstats: {description: "Bam index stats."}
     }
 }
 
