@@ -218,3 +218,20 @@ ivar_docu:
 run_ivar:
 	miniwdl run --debug --dir test-ivar --cfg miniwdl_production.cfg --input wf_ivar.json wf_ivar.wdl
 
+#
+# bbduk
+#
+bbduk:
+	womtool validate --inputs wf_bbduk.json wf_bbduk.wdl
+	miniwdl check wf_bbduk.wdl
+
+bbduk_docu:
+	wdl-aid wf_bbduk.wdl -o wf_bbduk.md
+	womtool graph wf_bbduk.wdl > wf_bbduk.dot
+	dot -Tpdf -o wf_bbduk.pdf wf_bbduk.dot
+	dot -Tjpeg -o wf_bbduk.jpeg wf_bbduk.dot
+	rm wf_bbduk.dot
+
+run_bbduk:
+	miniwdl run --debug --dir test-bbduk --cfg miniwdl_production.cfg --input wf_bbduk.json wf_bbduk.wdl
+
