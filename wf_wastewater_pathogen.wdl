@@ -43,6 +43,7 @@ workflow wastewater {
     # centrifuge
     Boolean run_centrifuge
     Array[File]+ indexFiles
+    Int disk_multiplier
     # ivar
     File primers_bed
     Int min_trimmed_length
@@ -75,7 +76,10 @@ workflow wastewater {
       indexFiles = indexFiles,
       docker_centrifuge = docker_centrifuge,
       docker_kreport = docker_kreport,
-      threads = threads
+      threads = threads,
+      memory = memory,
+      disk_size = disk_size,
+      disk_multiplier = disk_multiplier
     }
   } 
 
