@@ -3,7 +3,7 @@
   "wastewater.docker_fastqc": "staphb/fastqc:0.12.1",
   "wastewater.docker_freyja": "dbest/freyja:v2.0.0",
   "wastewater.docker_minimap2": "dbest/minimap2:2.30",
-  "wastewater.docker_multiqc": "multiqc/multiqc:v1.28",
+  "wastewater.docker_multiqc": "multiqc/multiqc:v1.30",
   "wastewater.include_reads_with_no_primers": true,
   "wastewater.keep_reads_qc_fail": true,
   "wastewater.min_quality_score": 20,
