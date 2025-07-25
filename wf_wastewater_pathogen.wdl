@@ -136,10 +136,13 @@ workflow wastewater {
     docker = docker_freyja
   }
 
+#  wf_ivar.flagstat,
+#  wf_ivar.idxstats,
   Array[File] allReports = select_all([
   task_fastqc.forwardData,
   task_fastqc.reverseData,
   task_fastp.report_json,
+  task_qualimap_bamqc.genome_results, 
   wf_bbduk.adapter_stats,
   wf_bbduk.phiX_stats,
   wf_bbduk.polyA_stats,
@@ -181,11 +184,13 @@ workflow wastewater {
     File final_trimmed_bam = wf_ivar.final_trimmed_bam
     File final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
     File flagstat = wf_ivar.flagstat
+    File idxstats = wf_ivar.idxstats
     File log_ivar = wf_ivar.log
     File errlog_ivar = wf_ivar.errlog
 
     # qualimap
     File qc_report = task_qualimap_bamqc.report
+    Array[File] qc_data = task_qualimap_bamqc.raw_data_qualimapReport
     
     # freyja
     File variants_output = task_freyja.variants
