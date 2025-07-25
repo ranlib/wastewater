@@ -3,6 +3,7 @@ version 1.0
 import "task_fastqc.wdl" as fastqc
 import "task_fastp.wdl" as fastp
 import "wf_centrifuge.wdl" as centrifuge
+import "wf_bbduk.wdl" as bbduk
 import "wf_minimap2.wdl" as minimap2
 import "wf_ivar.wdl" as ivar
 import "wf_qualimap.wdl" as qualimap
@@ -14,30 +15,38 @@ workflow wastewater {
     File read1
     File read2
     File reference
-    Int depth_cut_off
-    Int min_base_quality
     String docker_centrifuge
     String docker_kreport
     String docker_fastqc
     String docker_fastp
+    String docker_bbduk
     String docker_minimap2
     String docker_freyja
     String docker_multiqc
     String docker_qualimap
+    # bbduk
+    File adapters
+    File phiX
+    File polyA
+    File primers
+    Int disk_size
+    # freyja
+    Int depth_cut_off
+    Int min_base_quality
     String samplename
     String pathogen
     # minimap2
-    Int threads = 1
-    String memory = "32GB"
+    Int threads
+    String memory
     # centrifuge
-    Boolean run_centrifuge = true
+    Boolean run_centrifuge
     Array[File]+ indexFiles
     # ivar
     File primers_bed
-    Int min_trimmed_length = 50
-    Int min_quality_score = 20
-    Boolean include_reads_with_no_primers = false
-    Boolean keep_reads_qc_fail = false
+    Int min_trimmed_length
+    Int min_quality_score
+    Boolean include_reads_with_no_primers
+    Boolean keep_reads_qc_fail
   }
 
   call fastqc.task_fastqc {
@@ -67,6 +76,21 @@ workflow wastewater {
       threads = threads
     }
   } 
+
+  call bbduk.wf_bbduk {
+    input:
+    read1 = read1,
+    read2 = read2,
+    primers = primers,
+    adapters = adapters,
+    phiX = phiX,
+    polyA = polyA,
+    samplename = samplename,
+    disk_size = disk_size,	
+    threads = threads,
+    memory = memory,
+    docker = docker_bbduk
+  }
 
   call minimap2.wf_minimap2 {
     input:
@@ -116,6 +140,10 @@ workflow wastewater {
   task_fastqc.forwardData,
   task_fastqc.reverseData,
   task_fastp.report_json,
+  wf_bbduk.adapter_stats,
+  wf_bbduk.phiX_stats,
+  wf_bbduk.polyA_stats,
+  wf_bbduk.primer_stats,
   wf_centrifuge.krakenStyleTSV,
   task_freyja.demixing_output
   ])
@@ -137,6 +165,12 @@ workflow wastewater {
     File clean_reads2 = task_fastp.clean_read2
     File reports_json = task_fastp.report_json
     File reports_html = task_fastp.report_html
+
+    # bbduk
+    File adapter_stats = wf_bbduk.adapter_stats
+    File primer_stats = wf_bbduk.primer_stats
+    File polyA_stats = wf_bbduk.polyA_stats
+    File phiX_stats = wf_bbduk.phiX_stats
 
     # centrifuge
     File? centrifuge_classification = wf_centrifuge.classificationTSV
