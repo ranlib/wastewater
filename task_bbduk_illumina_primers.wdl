@@ -8,7 +8,6 @@ task task_bbduk_illumina_primers {
     String samplename
     String docker = "staphb/bbtools:39.26"
     String memory = "8GB"
-    Boolean keep = true
     Int threads = 1
     Int disk_size = 100
     Int number_of_retries = 1
