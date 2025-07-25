@@ -28,7 +28,7 @@ task task_bbduk {
     out1=~{samplename}_no_adapter_1.fastq.gz \
     out2=~{samplename}_no_adapter_2.fastq.gz \
     ref=~{adapters} \
-    stats=~{samplename}_no_adapter.stats.txt \
+    stats=~{samplename}_adapter.stats.txt \
     ktrim=r \
     k=23 \
     mink=11 \
@@ -50,8 +50,8 @@ task task_bbduk {
 
     # polyA
     bbduk.sh ~{java_mem} threads=~{threads} \
-    in1=~{samplename}_no_phiX_1.fastq.gz \
-    in2=~{samplename}_no_phiX_2.fastq.gz \
+    in1=~{samplename}_no_phix_1.fastq.gz \
+    in2=~{samplename}_no_phix_2.fastq.gz \
     out1=~{samplename}_no_polyA_1.fastq.gz \
     out2=~{samplename}_no_polyA_2.fastq.gz \
     outm=~{samplename}_matched_polyA.fq.gz \
@@ -75,7 +75,7 @@ task task_bbduk {
   output {
     File read1_clean = "${samplename}_clean_1.fastq.gz"
     File read2_clean = "${samplename}_clean_2.fastq.gz"
-    File adapter_stats = "${samplename}_adapters.stats.txt"
+    File adapter_stats = "${samplename}_adapter.stats.txt"
     File phiX_stats = "${samplename}_phix.stats.txt"
     File polyA_stats = "${samplename}_polyA.stats.txt"
   }
