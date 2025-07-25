@@ -1,7 +1,7 @@
 {
   "wf_bbduk.adapters": "contamination/adapters.fa.gz",
   "wf_bbduk.disk_size": 100,
-  "wf_bbduk.docker_bbduk": "staphb/bbtools:39.26",
+  "wf_bbduk.docker": "staphb/bbtools:39.26",
   "wf_bbduk.memory": "64GB",
   "wf_bbduk.phiX": "contamination/phix174_ill.ref.fa.gz",
   "wf_bbduk.polyA": "contamination/polyA.fa.gz",

@@ -15,7 +15,7 @@ workflow wf_bbduk {
     String memory = "6GB"
     Int disk_size = 100
     Int threads = 1
-    String docker_bbduk = "staphb/bbtools:39.26"
+    String docker = "staphb/bbtools:39.26"
   }
 
   call bbduk.task_bbduk {
@@ -29,7 +29,7 @@ workflow wf_bbduk {
     disk_size = disk_size,	
     threads = threads,
     memory = memory,
-    docker = docker_bbduk
+    docker = docker
   }
 
   call bbduk_primers.task_bbduk_illumina_primers {
@@ -41,7 +41,7 @@ workflow wf_bbduk {
     disk_size = disk_size,	
     threads = threads,
     memory = memory,
-    docker = docker_bbduk
+    docker = docker
   }
 
   output {
@@ -50,6 +50,7 @@ workflow wf_bbduk {
     File adapter_stats = task_bbduk.adapter_stats
     File phiX_stats = task_bbduk.phiX_stats
     File polyA_stats = task_bbduk.polyA_stats
+    File primer_stats = task_bbduk_illumina_primers.primer_stats
   }
 
   meta {
