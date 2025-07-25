@@ -24,6 +24,8 @@ workflow wastewater {
     String docker_freyja
     String docker_multiqc
     String docker_qualimap
+    String docker_ivar
+    String docker_samtools
     # bbduk
     File adapters
     File phiX
@@ -112,7 +114,10 @@ workflow wastewater {
     min_trimmed_length = min_trimmed_length,
     min_quality_score = min_quality_score,
     include_reads_with_no_primers = include_reads_with_no_primers,
-    keep_reads_qc_fail = keep_reads_qc_fail
+    keep_reads_qc_fail = keep_reads_qc_fail,
+    threads = threads,
+    docker_samtools = docker_samtools,
+    docker_ivar = docker_ivar
   }
   
   call qualimap.task_qualimap_bamqc {
