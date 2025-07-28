@@ -98,12 +98,23 @@ workflow wf_ivar {
     outputPath = basename(Sort.outputBam, ".bam") + ".idxstats",
     docker = docker_samtools
   }
+
+  call samtools.Stats {
+    input:
+    input_bam = Sort.outputBam,
+    input_bam_index = Sort.outputBamIndex,
+    outputPath = basename(Sort.outputBam, ".bam") + ".stats",
+    threads = threads,
+    docker = docker_samtools
+  }
   
+
   output {
     File final_trimmed_bam = Sort.outputBam
     File final_trimmed_bam_index = Sort.outputBamIndex
     File flagstat = Flagstat.flagstat
     File idxstats = Idxstats.idxstats
+    File stats = Stats.stats
     File log = task_ivar_trim.log
     File errlog = task_ivar_trim.errlog
   }
