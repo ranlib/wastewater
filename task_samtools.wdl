@@ -785,7 +785,7 @@ task Stats {
         File input_bam
         File? input_bam_index
         String? region
-        Array[Int, 3]? coverage_min_max_step
+        Array[Int]? coverage_min_max_step
         Boolean remove_dups = false
         Boolean customized_index_file = false
         String? required_flag
@@ -815,30 +815,30 @@ task Stats {
     command <<<
         set -euxo pipefail
         samtools stats \
-            ~{true="--coverage ${sep=',' coverage_min_max_step}" false="" coverage_min_max_step} \
+            ~{true="--coverage" false="" defined(coverage_min_max_step)} ~{sep=',' coverage_min_max_step} \
             ~{true="-d" false="" remove_dups} \
             ~{true="-X" false="" customized_index_file} \
-            ~{true="-f ${required_flag}" false="" required_flag} \
-            ~{true="-F ${filtering_flag}" false="" filtering_flag} \
-            ~{true="--GC-depth ${gc_depth}" false="" gc_depth} \
-            ~{true="-i ${insert_size}" false="" insert_size} \
-            ~{true="-I ${read_group_id}" false="" read_group_id} \
-            ~{true="-l ${read_length}" false="" read_length} \
-            ~{true="-m ${most_inserts}" false="" most_inserts} \
-            ~{true="-P ${split_prefix}" false="" split_prefix} \
-            ~{true="-q ${trim_quality}" false="" trim_quality} \
-            ~{true="-r ${reference_sequence}" false="" reference_sequence} \
-            ~{true="-S ${split_tag}" false="" split_tag} \
-            ~{true="-t ${target_regions_file}" false="" target_regions_file} \
+            ~{true="-f" false="" defined(required_flag)} ~{required_flag} \
+            ~{true="-F" false="" defined(filtering_flag)} ~{filtering_flag} \
+            ~{true="--GC-depth" false="" defined(gc_depth)} ~{gc_depth} \
+            ~{true="-i" false="" defined(insert_size)} ~{insert_size} \
+            ~{true="-I" false="" defined(read_group_id)} ~{read_group_id} \
+            ~{true="-l" false="" defined(read_length)} ~{read_length} \
+            ~{true="-m" false="" defined(most_inserts)} ~{most_inserts} \
+            ~{true="-P" false="" defined(split_prefix)} ~{split_prefix} \
+            ~{true="-q" false="" defined(trim_quality)} ~{trim_quality} \
+            ~{true="-r" false="" defined(reference_sequence)} ~{reference_sequence} \
+            ~{true="-S" false="" defined(split_tag)} ~{split_tag} \
+            ~{true="-t" false="" defined(target_regions_file)} ~{target_regions_file} \
             ~{true="-x" false="" sparse_output} \
             ~{true="-p" false="" remove_overlaps} \
-            ~{true="-g ${coverage_threshold}" false="" coverage_threshold} \
-            ~{true="--input-fmt-option ${input_format_option}" false="" input_format_option} \
-            ~{true="-@ ${threads}" false="" threads} \
-            ~{true="--verbosity ${verbosity}" false="" verbosity} \
+            ~{true="-g" false="" defined(coverage_threshold)} ~{coverage_threshold} \
+            ~{true="--input-fmt-option" false="" defined(input_format_option)} ~{input_format_option} \
+            ~{true="-@" false="" defined(threads)} ~{threads} \
+            ~{true="--verbosity" false="" defined(verbosity)} ~{verbosity} \
             ~{input_bam} \
-            ~{true="${region}" false="" region} \
-            > "${basename(input_bam)}.stats"
+            ~{region} \
+            > "~{basename(input_bam)}.stats"
     >>>
 
     output {
@@ -858,7 +858,7 @@ workflow Samtools {
         File bam_file
         File? bam_index_file
         String? target_region
-        Array[Int, 3]? cov_dist_params
+        Array[Int]? cov_dist_params
         Boolean exclude_duplicates
         File? ref_fasta
         Int num_threads
@@ -876,6 +876,6 @@ workflow Samtools {
     }
 
     output {
-        File generated_stats_file = SamtoolsStats.stats_file
+        File generated_stats_file = Stats.stats_file
     }
 }
