@@ -238,7 +238,7 @@ task FilterShortReadsBam {
         String docker = "dbest/samtools:v1.22.1"
     }
 
-    String outputPathBamIndex = sub(outputPathBam, "\.bam$", ".bai")
+    String outputPathBamIndex = sub(outputPathBam, ".bam", ".bai")
 
     command {
         set -e
@@ -275,7 +275,7 @@ task FilterShortReadsBam {
 task Flagstat {
     input {
         File inputBam
-        String outputPath = sub(inputBam, "\.bam$", ".flagstat")
+        String outputPath = sub(inputBam, ".bam", ".flagstat")
 
         Int threads = 1
 
@@ -318,7 +318,7 @@ task Flagstat {
 task Idxstats {
     input {
         File inputBam
-        String outputPath = sub(inputBam, "\.bam$", ".idxstats")
+        String outputPath = sub(inputBam, ".bam", ".idxstats")
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
         String docker = "dbest/samtools:v1.22.1"
     }
@@ -363,7 +363,7 @@ task Index {
 
     # Select_first is needed, otherwise womtool validate fails.
     String outputPath = select_first([outputBamPath, basename(bamFile)])
-    String bamIndexPath = sub(outputPath, "\.bam$", ".bai")
+    String bamIndexPath = sub(outputPath, ".bam", ".bai")
 
     command {
         bash -c '
@@ -461,7 +461,7 @@ task Merge {
         String docker = "dbest/samtools:v1.22.1"
     }
 
-    String indexPath = sub(outputBamPath, "\.bam$",".bai")
+    String indexPath = sub(outputBamPath, ".bam",".bai")
 
     # Samtools uses additional threads for merge.
     command {
