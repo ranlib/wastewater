@@ -244,3 +244,20 @@ bbduk_docu:
 run_bbduk:
 	miniwdl run --debug --dir test-bbduk --cfg miniwdl_production.cfg --input wf_bbduk.json wf_bbduk.wdl
 
+#
+# samtools
+#
+samtools:
+	womtool validate --inputs wf_samtools.json wf_samtools.wdl
+	miniwdl check wf_samtools.wdl
+
+samtools_docu:
+	wdl-aid wf_samtools.wdl -o wf_samtools.md
+	womtool graph wf_samtools.wdl > wf_samtools.dot
+	dot -Tpdf -o wf_samtools.pdf wf_samtools.dot
+	dot -Tjpeg -o wf_samtools.jpeg wf_samtools.dot
+	rm wf_samtools.dot
+
+run_samtools:
+	miniwdl run --debug --dir test-samtools --cfg miniwdl_production.cfg --input wf_samtools.json wf_samtools.wdl
+
