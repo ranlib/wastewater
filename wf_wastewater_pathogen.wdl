@@ -7,6 +7,7 @@ import "wf_bbduk.wdl" as bbduk
 import "wf_minimap2.wdl" as minimap2
 import "wf_ivar.wdl" as ivar
 import "wf_qualimap.wdl" as qualimap
+import "task_collect_wgs_metrics.wdl" as wgsQC
 import "task_freyja.wdl" as freyja
 import "task_multiqc.wdl" as multiqc
 
@@ -137,25 +138,33 @@ workflow wastewater {
     samplename = samplename
   }
 
+  call wgsQC.task_collect_wgs_metrics {
+    input:
+    bam = wf_minimap2.bam,
+    reference = reference
+  }
+
   call freyja.task_freyja {
     input:
     samplename = samplename,
     depth_cut_off = depth_cut_off,
     min_base_quality = min_base_quality,
-    bam = wf_minimap2.bam,
-    bai = wf_minimap2.bai,
+    bam = wf_ivar.final_trimmed_bam,
+    bai = wf_ivar.final_trimmed_bam_index,
     reference = reference,
     pathogen = pathogen,
     docker = docker_freyja
   }
 
-#  wf_ivar.flagstat,
-#  wf_ivar.idxstats,
   Array[File] allReports = select_all([
   task_fastqc.forwardData,
   task_fastqc.reverseData,
   task_fastp.report_json,
-  task_qualimap_bamqc.genome_results, 
+  task_qualimap_bamqc.genome_results,
+  task_collect_wgs_metrics.collectMetricsOutput,
+  wf_ivar.flagstat,
+  wf_ivar.idxstats,
+  wf_ivar.stats,
   wf_bbduk.adapter_stats,
   wf_bbduk.phiX_stats,
   wf_bbduk.polyA_stats,
@@ -183,28 +192,36 @@ workflow wastewater {
     File reports_json = task_fastp.report_json
     File reports_html = task_fastp.report_html
 
+    # centrifuge
+    File? centrifuge_classification = wf_centrifuge.classificationTSV
+    File? centrifuge_kraken_style = wf_centrifuge.krakenStyleTSV
+    File? centrifuge_summary = wf_centrifuge.summaryReportTSV
+
     # bbduk
     File adapter_stats = wf_bbduk.adapter_stats
     File primer_stats = wf_bbduk.primer_stats
     File polyA_stats = wf_bbduk.polyA_stats
     File phiX_stats = wf_bbduk.phiX_stats
 
-    # centrifuge
-    File? centrifuge_classification = wf_centrifuge.classificationTSV
-    File? centrifuge_kraken_style = wf_centrifuge.krakenStyleTSV
-    File? centrifuge_summary = wf_centrifuge.summaryReportTSV
-
+    # minimap
+    File bam = wf_minimap2.bam
+    File bai = wf_minimap2.bai
+    
     # ivar
     File final_trimmed_bam = wf_ivar.final_trimmed_bam
     File final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
     File flagstat = wf_ivar.flagstat
     File idxstats = wf_ivar.idxstats
+    File stats = wf_ivar.stats
     File log_ivar = wf_ivar.log
     File errlog_ivar = wf_ivar.errlog
 
     # qualimap
     File qc_report = task_qualimap_bamqc.report
     Array[File] qc_data = task_qualimap_bamqc.raw_data_qualimapReport
+
+    # gatk
+    File collect_wgs_output_metrics = task_collect_wgs_metrics.collectMetricsOutput
     
     # freyja
     File variants_output = task_freyja.variants
