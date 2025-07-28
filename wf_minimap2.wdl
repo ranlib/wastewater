@@ -23,10 +23,11 @@ workflow wf_minimap2 {
     memory = memory,
     docker = docker
   }
-  
+
+  #referenceFile = reference,
   call minimap2.Mapping {
     input:
-    referenceFile = reference,
+    referenceFile = Indexing.indexFile,
     queryFile1 = read1,
     queryFile2 = read2,
     outputPrefix = samplename,
