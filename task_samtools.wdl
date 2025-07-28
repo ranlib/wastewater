@@ -781,101 +781,116 @@ task View {
 }
 
 task Stats {
-    input {
-        File input_bam
-        File? input_bam_index
-        String? region
-        Array[Int]? coverage_min_max_step
-        Boolean remove_dups = false
-        Boolean customized_index_file = false
-        String? required_flag
-        String? filtering_flag
-        Float? gc_depth
-        Int? insert_size
-        String? read_group_id
-        Int? read_length
-        Float? most_inserts
-        String? split_prefix
-        Int? trim_quality
-        File? reference_sequence
-        String? split_tag
-        File? target_regions_file
-        Boolean sparse_output = false
-        Boolean remove_overlaps = false
-        Int? coverage_threshold
-        String? input_format_option
-        Int threads = 1
-        Int verbosity = 0
-
-        Int cpu_cores = 1
-        Int memory_gb = 4
-        Int disk_gb = 20
-    }
-
-    command <<<
-        set -euxo pipefail
-        samtools stats \
-            ~{true="--coverage" false="" defined(coverage_min_max_step)} ~{sep=',' coverage_min_max_step} \
-            ~{true="-d" false="" remove_dups} \
-            ~{true="-X" false="" customized_index_file} \
-            ~{true="-f" false="" defined(required_flag)} ~{required_flag} \
-            ~{true="-F" false="" defined(filtering_flag)} ~{filtering_flag} \
-            ~{true="--GC-depth" false="" defined(gc_depth)} ~{gc_depth} \
-            ~{true="-i" false="" defined(insert_size)} ~{insert_size} \
-            ~{true="-I" false="" defined(read_group_id)} ~{read_group_id} \
-            ~{true="-l" false="" defined(read_length)} ~{read_length} \
-            ~{true="-m" false="" defined(most_inserts)} ~{most_inserts} \
-            ~{true="-P" false="" defined(split_prefix)} ~{split_prefix} \
-            ~{true="-q" false="" defined(trim_quality)} ~{trim_quality} \
-            ~{true="-r" false="" defined(reference_sequence)} ~{reference_sequence} \
-            ~{true="-S" false="" defined(split_tag)} ~{split_tag} \
-            ~{true="-t" false="" defined(target_regions_file)} ~{target_regions_file} \
-            ~{true="-x" false="" sparse_output} \
-            ~{true="-p" false="" remove_overlaps} \
-            ~{true="-g" false="" defined(coverage_threshold)} ~{coverage_threshold} \
-            ~{true="--input-fmt-option" false="" defined(input_format_option)} ~{input_format_option} \
-            ~{true="-@" false="" defined(threads)} ~{threads} \
-            ~{true="--verbosity" false="" defined(verbosity)} ~{verbosity} \
-            ~{input_bam} \
-            ~{region} \
-            > "~{basename(input_bam)}.stats"
-    >>>
-
-    output {
-        File stats_file = "${basename(input_bam)}.stats"
-    }
-
-    runtime {
-        docker: "dbest/samtools:v1.22.1"
-        cpu: cpu_cores
-        memory: "${memory_gb} GB"
-        disk: "${disk_gb} GB"
-    }
+  input {
+    File input_bam
+    File? input_bam_index
+    String? region
+    Array[Int]? coverage_min_max_step
+    Boolean remove_dups = false
+    Boolean customized_index_file = false
+    String? required_flag
+    String? filtering_flag
+    Float? gc_depth
+    Int? insert_size
+    String? read_group_id
+    Int? read_length
+    Float? most_inserts
+    String? split_prefix
+    Int? trim_quality
+    File? reference_sequence
+    String? split_tag
+    File? target_regions_file
+    Boolean sparse_output = false
+    Boolean remove_overlaps = false
+    Int? coverage_threshold
+    String? input_format_option
+    Int threads = 1
+    Int verbosity = 0
+    
+    Int cpu_cores = 1
+    Int memory_gb = 4
+    Int disk_gb = 20
+    
+    String outputPath
+    String docker = "dbest/samtools:v1.22.1"
+  }
+  
+  command <<<
+    set -euxo pipefail
+    samtools stats \
+    ~{true="--coverage" false="" defined(coverage_min_max_step)} ~{sep=',' coverage_min_max_step} \
+    ~{true="-d" false="" remove_dups} \
+    ~{true="-X" false="" customized_index_file} \
+    ~{true="-f" false="" defined(required_flag)} ~{required_flag} \
+    ~{true="-F" false="" defined(filtering_flag)} ~{filtering_flag} \
+    ~{true="--GC-depth" false="" defined(gc_depth)} ~{gc_depth} \
+    ~{true="-i" false="" defined(insert_size)} ~{insert_size} \
+    ~{true="-I" false="" defined(read_group_id)} ~{read_group_id} \
+    ~{true="-l" false="" defined(read_length)} ~{read_length} \
+    ~{true="-m" false="" defined(most_inserts)} ~{most_inserts} \
+    ~{true="-P" false="" defined(split_prefix)} ~{split_prefix} \
+    ~{true="-q" false="" defined(trim_quality)} ~{trim_quality} \
+    ~{true="-r" false="" defined(reference_sequence)} ~{reference_sequence} \
+    ~{true="-S" false="" defined(split_tag)} ~{split_tag} \
+    ~{true="-t" false="" defined(target_regions_file)} ~{target_regions_file} \
+    ~{true="-x" false="" sparse_output} \
+    ~{true="-p" false="" remove_overlaps} \
+    ~{true="-g" false="" defined(coverage_threshold)} ~{coverage_threshold} \
+    ~{true="--input-fmt-option" false="" defined(input_format_option)} ~{input_format_option} \
+    ~{true="-@" false="" defined(threads)} ~{threads} \
+    ~{true="--verbosity" false="" defined(verbosity)} ~{verbosity} \
+    ~{input_bam} \
+    ~{region} \
+    > ~{outputPath}
+  >>>
+  
+  output {
+    File stats = outputPath
+  }
+  
+  runtime {
+    docker: docker
+    cpu: cpu_cores
+    memory: "${memory_gb} GB"
+    disk: "${disk_gb} GB"
+  }
+  
+  parameter_meta {
+    # inputs
+    input_bam: {description: "Input bam file", category: "required"}
+    threads: {description: "The number of threads to use.", category: "advanced"}
+    memory_gb: {description: "The amount of memory this job will use.", category: "advanced"}
+    docker: {description: "The docker image used for this task.", category: "advanced"}
+    
+    # outputs
+    stats: {description: "Output bam statistics."}
+  }
 }
 
 workflow Samtools {
-    input {
-        File bam_file
-        File? bam_index_file
-        String? target_region
-        Array[Int]? cov_dist_params
-        Boolean exclude_duplicates
-        File? ref_fasta
-        Int num_threads
-    }
-
-    call Stats {
-        input:
-            input_bam = bam_file,
-            input_bam_index = bam_index_file,
-            region = target_region,
-            coverage_min_max_step = cov_dist_params,
-            remove_dups = exclude_duplicates,
-            reference_sequence = ref_fasta,
-            threads = num_threads
-    }
-
-    output {
-        File generated_stats_file = Stats.stats_file
-    }
+  input {
+    File bam_file
+    File? bam_index_file
+    String? target_region
+    Array[Int]? cov_dist_params
+    Boolean exclude_duplicates
+    File? ref_fasta
+    Int num_threads
+  }
+  
+  call Stats {
+    input:
+    input_bam = bam_file,
+    input_bam_index = bam_index_file,
+    outputPath = basename(bam_file, ".bam") + ".stats",
+    region = target_region,
+    coverage_min_max_step = cov_dist_params,
+    remove_dups = exclude_duplicates,
+    reference_sequence = ref_fasta,
+    threads = num_threads
+  }
+  
+  output {
+    File generated_stats_file = Stats.stats
+  }
 }
