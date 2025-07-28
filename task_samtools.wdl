@@ -275,7 +275,7 @@ task FilterShortReadsBam {
 task Flagstat {
     input {
         File inputBam
-        String outputPath = sub(inputBam, ".bam", ".flagstat")
+        String outputPath
 
         Int threads = 1
 
@@ -283,14 +283,14 @@ task Flagstat {
         String docker = "dbest/samtools:v1.22.1"
     }
 
-    command {
-        set -e
+    command <<<
+        set -euxo pipefail
         mkdir -p "$(dirname ~{outputPath})"
 
         samtools flagstat \
             --threads ~{threads - 1} \
             ~{inputBam} > ~{outputPath}
-    }
+    >>>
 
     output {
         File flagstat = outputPath
@@ -318,16 +318,16 @@ task Flagstat {
 task Idxstats {
     input {
         File inputBam
-        String outputPath = sub(inputBam, ".bam", ".idxstats")
+        String outputPath
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
         String docker = "dbest/samtools:v1.22.1"
     }
 
-    command {
-        set -e
+    command <<<
+        set -euco pipefail
         mkdir -p "$(dirname ~{outputPath})"
         samtools idxstats ~{inputBam} > ~{outputPath}
-    }
+    >>>
 
     output {
         File idxstats = outputPath
@@ -546,7 +546,7 @@ task Quickcheck {
 task Sort {
     input {
         File inputBam
-        String outputPath = basename(inputBam, ".bam") + ".sorted.bam"
+        String outputPath
         Boolean sortByName = false
         Int compressionLevel = 1
 
@@ -556,11 +556,10 @@ task Sort {
         String docker = "dbest/samtools:v1.22.1"
     }
 
-    # Select first needed as outputPath is optional input (bug in cromwell).
-    String bamIndexPath = sub(select_first([outputPath]), ".bam", ".bai")
+    String bamIndexPath = sub(outputPath, ".bam", ".bai")
 
-    command {
-        set -e
+    command <<<
+        set -euxo pipefail
         mkdir -p "$(dirname ~{outputPath})"
         samtools sort \
         -l ~{compressionLevel} \
@@ -572,7 +571,7 @@ task Sort {
         samtools index \
         --threads ~{threads - 1} \
         ~{outputPath} ~{bamIndexPath}
-    }
+    >>>
 
     output {
         File outputBam = outputPath
