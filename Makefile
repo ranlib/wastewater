@@ -32,6 +32,9 @@ wastewater_pathogen_docu:
 run_wastewater_pathogen:
 	miniwdl run --debug --dir test-wastewater_pathogen --cfg miniwdl_production.cfg --input wf_wastewater_pathogen.json wf_wastewater_pathogen.wdl
 
+run_wastewater_pathogen_cromwell:
+	cromwell run wf_wastewater_pathogen.wdl -i wf_wastewater_pathogen.json
+
 run_wastewater_pathogen_measles:
 	miniwdl run --debug --dir test-wastewater_pathogen_measles --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_measles.json wf_wastewater_pathogen.wdl
 
@@ -111,6 +114,9 @@ minimap2_docu:
 
 run_minimap2:
 	miniwdl run --debug --dir test-minimap2 --cfg miniwdl_production.cfg --input wf_minimap2.json wf_minimap2.wdl
+
+run_minimap2_cromwell:
+	cromwell run wf_minimap2.wdl -i wf_minimap2.json
 
 
 #
@@ -217,6 +223,9 @@ ivar_docu:
 
 run_ivar:
 	miniwdl run --debug --dir test-ivar --cfg miniwdl_production.cfg --input wf_ivar.json wf_ivar.wdl
+
+run_ivar_cromwell:
+	cromwell run wf_ivar.wdl -i wf_ivar.json
 
 #
 # bbduk

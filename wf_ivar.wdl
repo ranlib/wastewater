@@ -79,6 +79,7 @@ workflow wf_ivar {
   call samtools.Sort {
     input:
     inputBam = task_ivar_trim.trimmed_bam,
+    outputPath = basename(task_ivar_trim.trimmed_bam, ".bam") + ".sorted.bam",
     threads = threads,
     docker = docker_samtools
   }
@@ -86,6 +87,7 @@ workflow wf_ivar {
   call samtools.Flagstat {
     input:
     inputBam = Sort.outputBam,
+    outputPath = basename(Sort.outputBam, ".bam") + ".flagstat",
     threads = threads,
     docker = docker_samtools
   }
@@ -93,6 +95,7 @@ workflow wf_ivar {
   call samtools.Idxstats {
     input:
     inputBam = Sort.outputBam,
+    outputPath = basename(Sort.outputBam, ".bam") + ".idxstats",
     docker = docker_samtools
   }
   
