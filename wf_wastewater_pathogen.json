@@ -10,7 +10,6 @@
         "fastqc": "staphb/fastqc:0.12.1",
         "freyja": "dbest/freyja:v2.0.0",
         "ivar": "staphb/ivar:1.4.4",
-        "kreport": "dbest/centrifuge:v1.0.4.2",
         "multiqc": "multiqc/multiqc:v1.30",
         "qualimap": "staphb/qualimap:2.3",
         "samtools": "dbest/samtools:v1.22.1"
