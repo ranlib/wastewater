@@ -30,7 +30,7 @@
     "wastewater.pathogen": "SARS-CoV-2",
     "wastewater.phiX": "contamination/phix174_ill.ref.fa.gz",
     "wastewater.polyA": "contamination/polyA.fa.gz",
-    "wastewater.primers": "primers/illumina_primers.fasta",
+    "wastewater.primers": "primers/SARS-CoV-2.scheme.fa.gz",
     "wastewater.primers_bed": "primers/SARS-CoV-2.scheme.bed",
     "wastewater.reads1": ["example_data/SRR13182925_1.fastq.gz", "example_data/SRR13182925x_1.fastq.gz"],
     "wastewater.reads2": ["example_data/SRR13182925_2.fastq.gz", "example_data/SRR13182925x_2.fastq.gz"],
