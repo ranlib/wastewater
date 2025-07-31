@@ -6,27 +6,29 @@ task task_multiqc {
     String outputPrefix
     String docker = "multiqc/multiqc:v1.30"
     String memory = "8GB"
+    Int disk_size = 100
   }
   
   command <<<
-    set -ex
+    set -euxo
     for file in ~{sep=' ' inputFiles}; do
     if [ -e $file ] ; then
-    cp $file .
+    cp -r $file .
     else
     echo "<W> multiqc: $file does not exist!"
     fi
     done
-    multiqc --force --no-data-dir -n ~{outputPrefix}.multiqc .
+    multiqc --force --no-data-dir --filename ~{outputPrefix} .
   >>>
 
   output {
-    File report = "${outputPrefix}.multiqc.html"
+    File report = "${outputPrefix}.html"
   }
 
   runtime {
     docker: docker
     memory: memory
+    disks: "local-disk " + disk_size + " SSD"
   }
 }
 
