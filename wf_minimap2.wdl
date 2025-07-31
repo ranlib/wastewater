@@ -1,7 +1,7 @@
 version 1.0
 
 import "./task_minimap2.wdl" as minimap2
-import "./task_sortSam.wdl" as sort_sam
+import "./task_samtools.wdl" as samtools
 
 workflow wf_minimap2 {
   input {
@@ -10,7 +10,7 @@ workflow wf_minimap2 {
     File read2
     String outputPrefix
     String samplename
-    String docker = "staphb/minimap2:2.29"
+    Map[String,String] dockerImages = { "minimap": "staphb/minimap2:2.29", "samtools": "dbest/samtools:v1.22.1" }
     String memory = "32G"
     Int threads = 1
   }
@@ -21,7 +21,7 @@ workflow wf_minimap2 {
     outputPrefix = outputPrefix,
     cores = threads,
     memory = memory,
-    docker = docker
+    docker = dockerImages["minimap"]
   }
 
   #referenceFile = reference,
@@ -36,19 +36,19 @@ workflow wf_minimap2 {
     outputSam = true,
     cores = threads,
     memory = memory,
-    docker = docker
+    docker = dockerImages["minimap"]
   }
 
-  call sort_sam.task_sortSam {
+  call samtools.Sort {
     input:
-    samplename = samplename,
-    insam = Mapping.alignmentFile
+    inputBam = Mapping.alignmentFile,
+    outputPath = basename(Mapping.alignmentFile, ".bam") + ".sorted.bam",
+    threads = threads,
+    docker = dockerImages["samtools"]
   }
-
+  
   output {
-    #File sam = Mapping.alignmentFile
-    #File mmi = Indexing.indexFile
-    File bam = task_sortSam.outbam
-    File bai = task_sortSam.outbamidx
+    File bam = Sort.outputBam
+    File bai = Sort.outputBamIndex
   }
 }
