@@ -7,6 +7,7 @@ task task_freyja {
     String samplename
     String pathogen
     String docker = "dbest/freyja:v2.0.0"
+    String memory
     File reference
     File bam
     File bai
@@ -28,5 +29,6 @@ task task_freyja {
   
   runtime {
     docker: docker
+    memory: memory
   }
 }  
