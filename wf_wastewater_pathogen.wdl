@@ -13,20 +13,11 @@ import "task_multiqc.wdl" as multiqc
 
 workflow wastewater {
   input {
-    File read1
-    File read2
+    Array[File]+ reads1
+    Array[File]+ reads2
+    Array[String]+ samplenames
     File reference
-    String docker_centrifuge
-    String docker_kreport
-    String docker_fastqc
-    String docker_fastp
-    String docker_bbduk
-    String docker_minimap2
-    String docker_freyja
-    String docker_multiqc
-    String docker_qualimap
-    String docker_ivar
-    String docker_samtools
+    Map[String, String] dockerImages
     # bbduk
     File adapters
     File phiX
@@ -36,7 +27,6 @@ workflow wastewater {
     # freyja
     Int depth_cut_off
     Int min_base_quality
-    String samplename
     String pathogen
     # minimap2
     Int threads
@@ -53,180 +43,174 @@ workflow wastewater {
     Boolean keep_reads_qc_fail
   }
 
-  call fastqc.task_fastqc {
-    input:
-    forwardReads = read1,
-    reverseReads = read2,
-    docker = docker_fastqc,
-    threads = threads,
-    memory = memory
-  }
+  scatter ( indx in range(length(reads1)) ) {
 
-  call fastp.task_fastp {
-    input:
-    read1 = read1,
-    read2 = read2,
-    sample_id = samplename,
-    docker_image = docker_fastp,
-    threads = threads,
-    memory = memory
-  }
-  
-  if ( run_centrifuge ) {
-    call centrifuge.wf_centrifuge {
+    call fastqc.task_fastqc {
       input:
-      read1 = task_fastp.clean_read1,
-      read2 = task_fastp.clean_read2,
-      samplename = samplename,
-      indexFiles = indexFiles,
-      docker_centrifuge = docker_centrifuge,
-      docker_kreport = docker_kreport,
+      forwardReads = reads1[indx],
+      reverseReads = reads2[indx],
+      docker = dockerImages["fastqc"],
       threads = threads,
-      memory = memory,
-      disk_size = disk_size,
-      disk_multiplier = disk_multiplier
+      memory = memory
     }
-  } 
+    
+    call fastp.task_fastp {
+      input:
+      read1 = reads1[indx],
+      read2 = reads2[indx],
+      sample_id = samplenames[indx],
+      docker_image = dockerImages["fastp"],
+      threads = threads,
+      memory = memory
+    }
+    
+    if ( run_centrifuge ) {
+      call centrifuge.wf_centrifuge {
+	input:
+	read1 = task_fastp.clean_read1,
+	read2 = task_fastp.clean_read2,
+	samplename = samplenames[indx],
+	indexFiles = indexFiles,
+	docker_centrifuge = dockerImages["centrifuge"],
+	docker_kreport = dockerImages["kreport"],
+	threads = threads,
+	memory = memory,
+	disk_size = disk_size,
+	disk_multiplier = disk_multiplier
+      }
+      } 
+      
+      call bbduk.wf_bbduk {
+	input:
+	read1 = reads1[indx],
+	read2 = reads2[indx],
+	primers = primers,
+	adapters = adapters,
+	phiX = phiX,
+	polyA = polyA,
+	samplename = samplenames[indx],
+	disk_size = disk_size,	
+	threads = threads,
+	memory = memory,
+	docker = dockerImages["bbduk"]
+      }
 
-  call bbduk.wf_bbduk {
-    input:
-    read1 = read1,
-    read2 = read2,
-    primers = primers,
-    adapters = adapters,
-    phiX = phiX,
-    polyA = polyA,
-    samplename = samplename,
-    disk_size = disk_size,	
-    threads = threads,
-    memory = memory,
-    docker = docker_bbduk
-  }
+      call minimap2.wf_minimap2 {
+	input:
+	read1 = task_fastp.clean_read1,
+	read2 = task_fastp.clean_read2,
+	reference = reference,
+	samplename = samplenames[indx],
+	threads = threads,
+	memory = memory,
+	outputPrefix = samplenames[indx]
+      }
 
-  call minimap2.wf_minimap2 {
-    input:
-    read1 = task_fastp.clean_read1,
-    read2 = task_fastp.clean_read2,
-    reference = reference,
-    samplename = samplename,
-    threads = threads,
-    memory = memory,
-    outputPrefix = samplename,
-    docker = docker_minimap2
-  }
+      call ivar.wf_ivar {
+	input:
+	raw_bam = wf_minimap2.bam,
+	sample_name = samplenames[indx],
+	primers_bed = primers_bed,
+	min_trimmed_length = min_trimmed_length,
+	min_quality_score = min_quality_score,
+	include_reads_with_no_primers = include_reads_with_no_primers,
+	keep_reads_qc_fail = keep_reads_qc_fail,
+	threads = threads,
+	docker_samtools = dockerImages["samtools"],
+	docker_ivar = dockerImages["ivar"]
+      }
 
-  call ivar.wf_ivar {
-    input:
-    raw_bam = wf_minimap2.bam,
-    sample_name = samplename,
-    primers_bed = primers_bed,
-    min_trimmed_length = min_trimmed_length,
-    min_quality_score = min_quality_score,
-    include_reads_with_no_primers = include_reads_with_no_primers,
-    keep_reads_qc_fail = keep_reads_qc_fail,
-    threads = threads,
-    docker_samtools = docker_samtools,
-    docker_ivar = docker_ivar
+      call qualimap.task_qualimap_bamqc {
+	input:
+	bam = wf_minimap2.bam,
+	threads = threads,
+	memory = memory,
+	docker = dockerImages["qualimap"],
+	samplename = samplenames[indx]
+      }
+
+      call wgsQC.task_collect_wgs_metrics {
+	input:
+	bam = wf_minimap2.bam,
+	reference = reference
+      }
+
+      call freyja.task_freyja {
+	input:
+	samplename = samplenames[indx],
+	depth_cut_off = depth_cut_off,
+	min_base_quality = min_base_quality,
+	bam = wf_ivar.final_trimmed_bam,
+	bai = wf_ivar.final_trimmed_bam_index,
+	reference = reference,
+	pathogen = pathogen,
+	docker = dockerImages["freyja"],
+	memory = memory
+      }
   }
   
-  call qualimap.task_qualimap_bamqc {
-    input:
-    bam = wf_minimap2.bam,
-    threads = threads,
-    memory = memory,
-    docker = docker_qualimap,
-    samplename = samplename
-  }
-
-  call wgsQC.task_collect_wgs_metrics {
-    input:
-    bam = wf_minimap2.bam,
-    reference = reference
-  }
-
-  call freyja.task_freyja {
-    input:
-    samplename = samplename,
-    depth_cut_off = depth_cut_off,
-    min_base_quality = min_base_quality,
-    bam = wf_ivar.final_trimmed_bam,
-    bai = wf_ivar.final_trimmed_bam_index,
-    reference = reference,
-    pathogen = pathogen,
-    docker = docker_freyja
-  }
-
-  Array[File] allReports = select_all([
-  task_fastqc.forwardData,
-  task_fastqc.reverseData,
-  task_fastp.report_json,
-  task_qualimap_bamqc.genome_results,
-  task_collect_wgs_metrics.collectMetricsOutput,
-  wf_ivar.flagstat,
-  wf_ivar.idxstats,
-  wf_ivar.stats,
-  wf_bbduk.adapter_stats,
-  wf_bbduk.phiX_stats,
-  wf_bbduk.polyA_stats,
-  wf_bbduk.primer_stats,
-  wf_centrifuge.krakenStyleTSV,
-  task_freyja.demixing_output
-  ])
-  Array[File] allReports1 = flatten([allReports, task_qualimap_bamqc.raw_data_qualimapReport])
+  Array[File] reports_fastq = flatten([ task_fastqc.forwardData, task_fastqc.reverseData, task_fastp.report_json])
+  #Array[File] reports_bam   = flatten([ task_qualimap_bamqc.genome_results, task_collect_wgs_metrics.collectMetricsOutput, task_qualimap_bamqc.raw_data_qualimapReport])
+  Array[File] reports_bam   = flatten([ task_qualimap_bamqc.genome_results, task_collect_wgs_metrics.collectMetricsOutput])
+  Array[File] reports_ivar  = flatten([ wf_ivar.flagstat, wf_ivar.idxstats, wf_ivar.stats])
+  Array[File] reports_bbduk = flatten([ wf_bbduk.adapter_stats, wf_bbduk.phiX_stats, wf_bbduk.polyA_stats, wf_bbduk.primer_stats])
+  Array[File?] reports_centrifuge = flatten([wf_centrifuge.krakenStyleTSV])
+  Array[File] reports_freyja = flatten([task_freyja.demixing_output])
+  Array[File] allReports = select_all(flatten([reports_fastq, reports_bam, reports_ivar, reports_bbduk, reports_freyja, reports_centrifuge]))
   call multiqc.task_multiqc {
     input:
-    inputFiles = allReports1,
-    outputPrefix = samplename,
-    docker = docker_multiqc,
+    inputFiles = allReports,
+    outputPrefix = "multiqc",
+    docker = dockerImages["multiqc"],
     memory = memory
   }
   
   output {
     # fastqc
-    File forwardHtml = task_fastqc.forwardHtml
-    File reverseHtml = task_fastqc.reverseHtml
+    Array[File] forwardHtml = task_fastqc.forwardHtml
+    Array[File] reverseHtml = task_fastqc.reverseHtml
 
     # fastp
-    File clean_reads1 = task_fastp.clean_read1
-    File clean_reads2 = task_fastp.clean_read2
-    File reports_json = task_fastp.report_json
-    File reports_html = task_fastp.report_html
+    Array[File] clean_reads1 = task_fastp.clean_read1
+    Array[File] clean_reads2 = task_fastp.clean_read2
+    Array[File] reports_json = task_fastp.report_json
+    Array[File] reports_html = task_fastp.report_html
 
     # centrifuge
-    File? centrifuge_classification = wf_centrifuge.classificationTSV
-    File? centrifuge_kraken_style = wf_centrifuge.krakenStyleTSV
-    File? centrifuge_summary = wf_centrifuge.summaryReportTSV
+    Array[File?] centrifuge_classification = wf_centrifuge.classificationTSV
+    Array[File?] centrifuge_kraken_style = wf_centrifuge.krakenStyleTSV
+    Array[File?] centrifuge_summary = wf_centrifuge.summaryReportTSV
 
     # bbduk
-    File adapter_stats = wf_bbduk.adapter_stats
-    File primer_stats = wf_bbduk.primer_stats
-    File polyA_stats = wf_bbduk.polyA_stats
-    File phiX_stats = wf_bbduk.phiX_stats
+    Array[File] adapter_stats = wf_bbduk.adapter_stats
+    Array[File] primer_stats = wf_bbduk.primer_stats
+    Array[File] polyA_stats = wf_bbduk.polyA_stats
+    Array[File] phiX_stats = wf_bbduk.phiX_stats
 
     # minimap
-    File bam = wf_minimap2.bam
-    File bai = wf_minimap2.bai
+    Array[File] bam = wf_minimap2.bam
+    Array[File] bai = wf_minimap2.bai
     
     # ivar
-    File final_trimmed_bam = wf_ivar.final_trimmed_bam
-    File final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
-    File flagstat = wf_ivar.flagstat
-    File idxstats = wf_ivar.idxstats
-    File stats = wf_ivar.stats
-    File log_ivar = wf_ivar.log
-    File errlog_ivar = wf_ivar.errlog
+    Array[File] final_trimmed_bam = wf_ivar.final_trimmed_bam
+    Array[File] final_trimmed_bam_index = wf_ivar.final_trimmed_bam_index
+    Array[File] flagstat = wf_ivar.flagstat
+    Array[File] idxstats = wf_ivar.idxstats
+    Array[File] stats = wf_ivar.stats
+    Array[File] log_ivar = wf_ivar.log
+    Array[File] errlog_ivar = wf_ivar.errlog
 
     # qualimap
-    File qc_report = task_qualimap_bamqc.report
-    Array[File] qc_data = task_qualimap_bamqc.raw_data_qualimapReport
+    Array[File] qc_report = task_qualimap_bamqc.report
+    Array[Array[File]] qc_data = task_qualimap_bamqc.raw_data_qualimapReport
 
     # gatk
-    File collect_wgs_output_metrics = task_collect_wgs_metrics.collectMetricsOutput
+    Array[File] collect_wgs_output_metrics = task_collect_wgs_metrics.collectMetricsOutput
     
     # freyja
-    File variants_output = task_freyja.variants
-    File depths_output = task_freyja.depths
-    File demixing_output = task_freyja.demixing_output
+    Array[File] variants_output = task_freyja.variants
+    Array[File] depths_output = task_freyja.depths
+    Array[File] demixing_output = task_freyja.demixing_output
 
     # multiqc
     File report = task_multiqc.report
@@ -240,8 +224,8 @@ workflow wastewater {
 
   parameter_meta {
     ## inputs
-    read1: {description: "Input fastq file with forward reads", category: "required"}
-    read2: {description: "Input fastq file with reverse reads", category: "required"}
+    reads1: {description: "Input fastq file with forward reads", category: "required"}
+    reads2: {description: "Input fastq file with reverse reads", category: "required"}
     samplename: {description: "Sample name", category: "required"}
     reference: {description: "Reference sequence for pathogen to be anlyzed", category: "required"}
     pathogen: {description: "Name of pathogen to be anlyzed", category: "required"}
