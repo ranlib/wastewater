@@ -102,6 +102,7 @@ workflow wastewater {
 	samplename = samplenames[indx],
 	threads = threads,
 	memory = memory,
+	dockerImages = {"samtools": dockerImages["samtools"], "minimap": dockerImages["minimap"]},
 	outputPrefix = samplenames[indx]
       }
 
