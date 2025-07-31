@@ -31,6 +31,7 @@ task task_freyja {
   runtime {
     docker: docker
     memory: memory
+    cpu: 1
     disks: "local-disk " + disk_size + " SSD"
   }
 }  
