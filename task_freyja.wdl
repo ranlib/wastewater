@@ -7,6 +7,7 @@ task task_freyja {
     String samplename
     String pathogen
     String docker = "dbest/freyja:v2.0.0"
+    Int disk_size = 100
     String memory
     File reference
     File bam
@@ -30,5 +31,6 @@ task task_freyja {
   runtime {
     docker: docker
     memory: memory
+    disks: "local-disk " + disk_size + " SSD"
   }
 }  
