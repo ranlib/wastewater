@@ -30,7 +30,7 @@
     "wastewater.pathogen": "SARS-CoV-2",
     "wastewater.phiX": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/contamination/phix174_ill.ref.fa.gz",
     "wastewater.polyA": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/contamination/polyA.fa.gz",
-    "wastewater.primers": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/primers/illumina_primers.fasta",
+    "wastewater.primers": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/primers/SARS-CoV-2.scheme.fa.gz",
     "wastewater.primers_bed": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/primers/SARS-CoV-2.scheme.bed",
     "wastewater.reads1": ["gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/example_data/SRR13182925_1.fastq.gz"],
     "wastewater.reads2": ["gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/example_data/SRR13182925_2.fastq.gz"],
