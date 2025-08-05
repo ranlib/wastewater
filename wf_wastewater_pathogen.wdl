@@ -8,6 +8,7 @@ import "wf_minimap2.wdl" as minimap2
 import "wf_ivar.wdl" as ivar
 import "wf_qualimap.wdl" as qualimap
 import "task_collect_wgs_metrics.wdl" as wgsQC
+import "wf_mosdepth.wdl" as mosdepth
 import "task_freyja.wdl" as freyja
 import "task_multiqc.wdl" as multiqc
 
@@ -135,6 +136,21 @@ workflow wastewater {
 	reference = reference
       }
 
+
+call mosdepth.task_mosdepth {
+        input:
+            input_bam = wf_minimap2.bam,
+            input_bai = wf_minimap2.bai,
+            bed_file = primers_bed,
+            threads = threads,
+            mapq = 20,
+            prefix = samplenames[indx],
+            memory = memory,
+            disk = "10GB",
+            docker = dockerImages["mosdepth"]
+    }
+
+   
       call freyja.task_freyja {
 	input:
 	samplename = samplenames[indx],
@@ -147,7 +163,7 @@ workflow wastewater {
 	docker = dockerImages["freyja"],
 	memory = memory
       }
-  }
+    }
   
   Array[File] reports_fastq = flatten([ task_fastqc.forwardData, task_fastqc.reverseData, task_fastp.report_json])
   #Array[File] reports_bam   = flatten([ task_qualimap_bamqc.genome_results, task_collect_wgs_metrics.collectMetricsOutput, task_qualimap_bamqc.raw_data_qualimapReport])
@@ -156,7 +172,8 @@ workflow wastewater {
   Array[File] reports_bbduk = flatten([ wf_bbduk.adapter_stats, wf_bbduk.phiX_stats, wf_bbduk.polyA_stats, wf_bbduk.primer_stats])
   Array[File?] reports_centrifuge = flatten([wf_centrifuge.krakenStyleTSV])
   Array[File] reports_freyja = flatten([task_freyja.demixing_output])
-  Array[File] allReports = select_all(flatten([reports_fastq, reports_bam, reports_ivar, reports_bbduk, reports_freyja, reports_centrifuge]))
+  Array[File?] reports_mosdepth = flatten([task_mosdepth.global_dist, task_mosdepth.regions_depth])
+  Array[File] allReports = select_all(flatten([reports_fastq, reports_bam, reports_ivar, reports_bbduk, reports_freyja, reports_centrifuge, reports_mosdepth]))
   call multiqc.task_multiqc {
     input:
     inputFiles = allReports,
@@ -204,6 +221,12 @@ workflow wastewater {
     Array[File] qc_report = task_qualimap_bamqc.report
     Array[Array[File]] qc_data = task_qualimap_bamqc.raw_data_qualimapReport
 
+    # mosdepth
+    Array[File] coverage_per_base = task_mosdepth.per_base_depth
+    Array[File] coverage_summary = task_mosdepth.summary_output
+    Array[File] coverage_global_dist = task_mosdepth.global_dist
+    Array[File?] coverage_regions_depth = task_mosdepth.regions_depth
+    
     # gatk
     Array[File] collect_wgs_output_metrics = task_collect_wgs_metrics.collectMetricsOutput
     

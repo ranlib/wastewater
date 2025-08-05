@@ -13,7 +13,8 @@
         "multiqc": "multiqc/multiqc:v1.30",
         "qualimap": "staphb/qualimap:2.3",
         "samtools": "dbest/samtools:v1.22.1",
-	"minimap": "staphb/minimap2:2.29"
+        "mosdepth": "brentp/mosdepth:v0.3.3",
+        "minimap": "staphb/minimap2:2.29"   
     },
     "wastewater.include_reads_with_no_primers": true,
     "wastewater.indexFiles": [
