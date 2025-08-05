@@ -1,0 +1,6 @@
+{
+  "wf_mosdepth.output_prefix": "SRR13182925",
+  "wf_mosdepth.sample_bai": "./SRR13182925/aquascope/TRIMMED_SORTED_BAM/SRR13182925.trimmed.sorted.bam.bai",
+  "wf_mosdepth.sample_bam": "./SRR13182925/aquascope/TRIMMED_SORTED_BAM/SRR13182925.trimmed.sorted.bam",
+  "wf_mosdepth.target_regions_bed": "./primers/SARS-CoV-2.scheme.bed"
+}
