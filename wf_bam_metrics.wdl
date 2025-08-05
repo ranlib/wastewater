@@ -1,6 +1,6 @@
 version 1.0
 
-import "picard.wdl" as picard
+import "task_picard.wdl" as picard
 import "task_samtools.wdl" as samtools
 
 workflow BamMetrics {
@@ -31,7 +31,7 @@ workflow BamMetrics {
         input:
             inputBam = bam,
             outputPath = prefix + ".flagstats",
-            dockerImage = dockerImages["samtools"]
+            docker = dockerImages["samtools"]
     }
 
     call picard.CollectMultipleMetrics as picardMetrics {
