@@ -261,3 +261,20 @@ samtools_docu:
 run_samtools:
 	miniwdl run --debug --dir test-samtools --cfg miniwdl_production.cfg --input wf_samtools.json wf_samtools.wdl
 
+#
+# mosdepth
+#
+mosdepth:
+	womtool validate --inputs wf_mosdepth.json wf_mosdepth.wdl
+	miniwdl check wf_mosdepth.wdl
+
+mosdepth_docu:
+	wdl-aid wf_mosdepth.wdl -o wf_mosdepth.md
+	womtool graph wf_mosdepth.wdl > wf_mosdepth.dot
+	dot -Tpdf -o wf_mosdepth.pdf wf_mosdepth.dot
+	dot -Tjpeg -o wf_mosdepth.jpeg wf_mosdepth.dot
+	rm wf_mosdepth.dot
+
+run_mosdepth:
+	miniwdl run --debug --dir test-mosdepth --cfg miniwdl_production.cfg --input wf_mosdepth.json wf_mosdepth.wdl
+
