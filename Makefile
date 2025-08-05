@@ -278,3 +278,20 @@ mosdepth_docu:
 run_mosdepth:
 	miniwdl run --debug --dir test-mosdepth --cfg miniwdl_production.cfg --input wf_mosdepth.json wf_mosdepth.wdl
 
+#
+# bam_metrics
+#
+bam_metrics:
+	womtool validate --inputs wf_bam_metrics.json wf_bam_metrics.wdl
+	miniwdl check wf_bam_metrics.wdl
+
+bam_metrics_docu:
+	wdl-aid wf_bam_metrics.wdl -o wf_bam_metrics.md
+	womtool graph wf_bam_metrics.wdl > wf_bam_metrics.dot
+	dot -Tpdf -o wf_bam_metrics.pdf wf_bam_metrics.dot
+	dot -Tjpeg -o wf_bam_metrics.jpeg wf_bam_metrics.dot
+	rm wf_bam_metrics.dot
+
+run_bam_metrics:
+	miniwdl run --debug --dir test-bam_metrics --cfg miniwdl_production.cfg --input wf_bam_metrics.json wf_bam_metrics.wdl
+
