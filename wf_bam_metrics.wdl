@@ -11,11 +11,9 @@ workflow BamMetrics {
         File referenceFasta
         File referenceFastaFai
         File referenceFastaDict
-        String strandedness = "None"
         Boolean collectAlignmentSummaryMetrics = true
         Boolean meanQualityByCycle = true
 
-        File? refRefflat
         Array[File]+? targetIntervals
         File? ampliconIntervals
 
@@ -38,27 +36,13 @@ workflow BamMetrics {
         input:
             inputBam = bam,
             inputBamIndex = bamIndex,
-            basename = prefix,
+            prefix = prefix,
             referenceFasta = referenceFasta,
             referenceFastaDict = referenceFastaDict,
             referenceFastaFai = referenceFastaFai,
             collectAlignmentSummaryMetrics = collectAlignmentSummaryMetrics,
             meanQualityByCycle = meanQualityByCycle,
             dockerImage = dockerImages["picard"]
-    }
-
-    if (defined(refRefflat)) {
-        Map[String, String] strandednessConversion = {"None": "NONE", "FR":"FIRST_READ_TRANSCRIPTION_STRAND", "RF": "SECOND_READ_TRANSCRIPTION_STRAND"}
-
-        call picard.CollectRnaSeqMetrics as rnaSeqMetrics {
-            input:
-                inputBam = bam,
-                inputBamIndex = bamIndex,
-                refRefflat = select_first([refRefflat]),
-                basename = prefix,
-                strandSpecificity = strandednessConversion[strandedness],
-                dockerImage = dockerImages["picard"]
-        }
     }
 
     if (defined(targetIntervals)) {
@@ -88,7 +72,7 @@ workflow BamMetrics {
                 referenceFasta = referenceFasta,
                 referenceFastaDict = referenceFastaDict,
                 referenceFastaFai = referenceFastaFai,
-                basename = prefix,
+                prefix = prefix,
                 targetIntervals = targetIntervalsLists.intervalList,
                 ampliconIntervals = ampliconIntervalsLists.intervalList,
                 dockerImage = dockerImages["picard"]
@@ -98,9 +82,8 @@ workflow BamMetrics {
     output {
         File flagstats = Flagstat.flagstat
         Array[File] picardMetricsFiles = picardMetrics.allStats
-        Array[File] rnaMetrics = select_all([rnaSeqMetrics.metrics, rnaSeqMetrics.chart])
         Array[File] targetedPcrMetrics = select_all([targetMetrics.perTargetCoverage, targetMetrics.perBaseCoverage, targetMetrics.metrics])
-        Array[File] reports = flatten([picardMetricsFiles, rnaMetrics, targetedPcrMetrics, [flagstats]])
+        Array[File] reports = flatten([picardMetricsFiles, targetedPcrMetrics, [flagstats]])
     }
 
     parameter_meta {
@@ -114,7 +97,6 @@ workflow BamMetrics {
         strandedness: {description: "The strandedness of the RNA sequencing library preparation. One of \"None\" (unstranded), \"FR\" (forward-reverse: first read equal transcript) or \"RF\" (reverse-forward: second read equals transcript).", category: "common"}
         collectAlignmentSummaryMetrics: {description: "Equivalent to the `PROGRAM=CollectAlignmentSummaryMetrics` argument in Picard.", category: "advanced"}
         meanQualityByCycle: {description: "Equivalent to the `PROGRAM=MeanQualityByCycle` argument in Picard.", category: "advanced"}
-        refRefflat: {description: "A refflat file containing gene annotations. If defined RNA sequencing metrics will be collected.", category: "common"}
         targetIntervals: {description: "An interval list describing the coordinates of the targets sequenced. This should only be used for targeted sequencing or WES. If defined targeted PCR metrics will be collected. Requires `ampliconIntervals` to also be defined.", category: "common"}
         ampliconIntervals: {description: "An interval list describinig the coordinates of the amplicons sequenced. This should only be used for targeted sequencing or WES. Required if `ampliconIntervals` is defined.", category: "common"}
         dockerImages: {description: "The docker images used. Changing this may result in errors which the developers may choose not to address.", category: "advanced"}
@@ -122,7 +104,6 @@ workflow BamMetrics {
         # outputs
         flagstats: {description: "Statistics output from flagstat."}
         picardMetricsFiles: {description: "All statistics from the CollectMultipleMetrics tool."}
-        rnaMetrics: {description: "Statistics from the RNA metrics tool."}
         targetedPcrMetrics: {description: "Statistics from the targeted PCR metrics tool."}
         reports: {description: "All reports from this pipeline gathered into one array."}
     }
