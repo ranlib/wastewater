@@ -137,19 +137,18 @@ workflow wastewater {
       }
 
 
-call mosdepth.task_mosdepth {
+      call mosdepth.task_mosdepth {
         input:
-            input_bam = wf_minimap2.bam,
-            input_bai = wf_minimap2.bai,
-            bed_file = primers_bed,
-            threads = threads,
-            mapq = 20,
-            prefix = samplenames[indx],
-            memory = memory,
-            disk = "10GB",
-            docker = dockerImages["mosdepth"]
-    }
-
+        input_bam = wf_minimap2.bam,
+        input_bai = wf_minimap2.bai,
+        bed_file = primers_bed,
+        threads = threads,
+        mapq = 20,
+        prefix = samplenames[indx],
+        memory = memory,
+        disk = "10GB",
+        docker = dockerImages["mosdepth"]
+      }
    
       call freyja.task_freyja {
 	input:
