@@ -73,8 +73,8 @@ task task_bbduk {
   >>>
 
   output {
-    File read1_clean = "${samplename}_clean_1.fastq.gz"
-    File read2_clean = "${samplename}_clean_2.fastq.gz"
+    File clean_read1 = "${samplename}_clean_1.fastq.gz"
+    File clean_read2 = "${samplename}_clean_2.fastq.gz"
     File adapter_stats = "${samplename}_adapter.stats.txt"
     File phiX_stats = "${samplename}_phix.stats.txt"
     File polyA_stats = "${samplename}_polyA.stats.txt"
