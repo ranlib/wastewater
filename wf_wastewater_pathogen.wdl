@@ -201,7 +201,8 @@ workflow wastewater {
   Array[File?] reports_centrifuge = flatten([wf_centrifuge.krakenStyleTSV])
   Array[File] reports_freyja = flatten([task_freyja.demixing_output])
   Array[File?] reports_mosdepth = flatten([task_mosdepth.global_dist, task_mosdepth.regions_depth])
-  Array[File] allReports = select_all(flatten([reports_fastq, reports_bam, reports_ivar, reports_bbduk, reports_freyja, reports_centrifuge, reports_mosdepth]))
+  Array[File] reports_picard = flatten(wf_bam_metrics.picardMetricsFiles)
+  Array[File] allReports = select_all(flatten([reports_fastq, reports_bam, reports_ivar, reports_bbduk, reports_freyja, reports_centrifuge, reports_mosdepth, reports_picard]))
   call multiqc.task_multiqc {
     input:
     inputFiles = allReports,
