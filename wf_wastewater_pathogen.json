@@ -13,6 +13,7 @@
         "multiqc": "multiqc/multiqc:v1.30",
         "qualimap": "staphb/qualimap:2.3",
         "samtools": "dbest/samtools:v1.22.1",
+	"picard": "quay.io/biocontainers/picard:3.4.0--hdfd78af_0",
         "mosdepth": "brentp/mosdepth:v0.3.3",
         "minimap": "staphb/minimap2:2.29"   
     },
