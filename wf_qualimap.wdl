@@ -2,24 +2,28 @@ version 1.0
 
 workflow wf_qualimap_bamqc {
   input {
-    File bam
+    Array[File] bams
+    Array[String] samplenames
     Int threads = 1
     String memory = "32GB"
     String docker_qualimap = "staphb/qualimap:2.3"
-    String samplename
   }
 
-  call task_qualimap_bamqc {
-    input:
-    bam = bam,
-    memory = memory,
-    threads = threads,
-    docker = docker_qualimap,
-    samplename = samplename
+  scatter ( indx in range(length(bams)) ) {
+    call task_qualimap_bamqc {
+      input:
+      bam = bams[indx],
+      samplename = samplenames[indx],
+      memory = memory,
+      threads = threads,
+      docker = docker_qualimap
+    }
   }
 
   output {
-    File report = task_qualimap_bamqc.report
+    Array[File] report = task_qualimap_bamqc.report
+    Array[File] genome_results = task_qualimap_bamqc.genome_results
+    Array[Array[File]] raw_data_qualimapReport = task_qualimap_bamqc.raw_data_qualimapReport
   }
 }
 
