@@ -205,7 +205,8 @@ qualimap_docu:
 	rm wf_qualimap.dot
 
 run_qualimap:
-	miniwdl run --debug --dir test-qualimap --cfg miniwdl_production.cfg --input wf_qualimap.json wf_qualimap.wdl
+	#miniwdl run --debug --dir test-qualimap --cfg miniwdl_production.cfg --input wf_qualimap.json wf_qualimap.wdl
+	miniwdl run --debug --dir test-qualimap --cfg miniwdl_production.cfg --input wf_qualimap_list.json wf_qualimap.wdl	
 
 #
 # ivar
@@ -294,4 +295,21 @@ bam_metrics_docu:
 
 run_bam_metrics:
 	miniwdl run --debug --dir test-bam_metrics --cfg miniwdl_production.cfg --input wf_bam_metrics.json wf_bam_metrics.wdl
+
+#
+# bam_metrics_list
+#
+bam_metrics_list:
+	womtool validate --inputs wf_bam_metrics_list.json wf_bam_metrics_list.wdl
+	miniwdl check wf_bam_metrics_list.wdl
+
+bam_metrics_list_docu:
+	wdl-aid wf_bam_metrics_list.wdl -o wf_bam_metrics_list.md
+	womtool graph wf_bam_metrics_list.wdl > wf_bam_metrics_list.dot
+	dot -Tpdf -o wf_bam_metrics_list.pdf wf_bam_metrics_list.dot
+	dot -Tjpeg -o wf_bam_metrics_list.jpeg wf_bam_metrics_list.dot
+	rm wf_bam_metrics_list.dot
+
+run_bam_metrics_list:
+	miniwdl run --debug --dir test-bam_metrics_list --cfg miniwdl_production.cfg --input wf_bam_metrics_list.json wf_bam_metrics_list.wdl
 
