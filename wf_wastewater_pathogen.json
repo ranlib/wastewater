@@ -36,7 +36,7 @@
     "wastewater.primers_bed": "primers/SARS-CoV-2.scheme.bed",
     "wastewater.reads1": ["example_data/SRR13182925_1.fastq.gz", "example_data/SRR13182925x_1.fastq.gz"],
     "wastewater.reads2": ["example_data/SRR13182925_2.fastq.gz", "example_data/SRR13182925x_2.fastq.gz"],
-    "wastewater.reference": "references/NC_045512_Hu-1.fasta",
+    "wastewater.reference": "references/MN908947.3.fa",
     "wastewater.run_centrifuge": true,
     "wastewater.samplenames": ["SRR13182925", "SRR13182925x"],
     "wastewater.threads": 32
