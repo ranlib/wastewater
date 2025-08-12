@@ -1,0 +1,14 @@
+{
+    "wf_bam_metrics_list.bams": ["test_bams/SRR13182925.sorted.bam", "test_bams/SRR13182925x.sorted.bam"],
+    "wf_bam_metrics_list.dockerImages": {
+        "picard": "quay.io/biocontainers/picard:3.4.0--hdfd78af_0",
+        "samtools": "dbest/samtools:v1.22.1"
+    },
+    "wf_bam_metrics_list.outputDir": ".",
+    "wf_bam_metrics_list.reference": "references/MN908947.3.fa",
+    "wf_bam_metrics_list.threads": 12,
+    "wf_bam_metrics_list.targetIntervals": [
+        "./primers/artic_v5_3_2_amplicons.bed"
+    ],
+    "wf_bam_metrics_list.ampliconIntervals": "./primers/artic_v5_3_2_amplicons.bed"
+}
