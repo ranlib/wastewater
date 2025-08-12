@@ -34,7 +34,7 @@
     "wastewater.primers_bed": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/primers/SARS-CoV-2.scheme.bed",
     "wastewater.reads1": ["gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/example_data/SRR13182925_1.fastq.gz"],
     "wastewater.reads2": ["gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/example_data/SRR13182925_2.fastq.gz"],
-    "wastewater.reference": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/references/NC_045512_Hu-1.fasta",
+    "wastewater.reference": "gs://fc-e3e28637-da65-437e-b6e0-a532c7f8e834/references/MN908947.3.fa",
     "wastewater.run_centrifuge": true,
     "wastewater.samplenames": ["SRR13182925"],
     "wastewater.threads": 64
