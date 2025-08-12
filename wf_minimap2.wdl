@@ -42,7 +42,7 @@ workflow wf_minimap2 {
   call samtools.Sort {
     input:
     inputBam = Mapping.alignmentFile,
-    outputPath = basename(Mapping.alignmentFile, ".bam") + ".sorted.bam",
+    outputPath = basename(Mapping.alignmentFile, ".sam") + ".sorted.bam",
     threads = threads,
     docker = dockerImages["samtools"]
   }
