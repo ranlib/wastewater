@@ -7,7 +7,7 @@ import "wf_centrifuge.wdl" as centrifuge
 import "wf_bbduk.wdl" as bbduk
 import "wf_minimap2.wdl" as minimap2
 import "wf_ivar.wdl" as ivar
-import "wf_qualimap.wdl" as qualimap
+import "task_qualimap.wdl" as qualimap
 import "wf_bam_metrics.wdl" as bam_metrics
 import "task_collect_wgs_metrics.wdl" as wgsQC
 import "wf_mosdepth.wdl" as mosdepth
