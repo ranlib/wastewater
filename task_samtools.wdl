@@ -103,7 +103,6 @@ task DictAndFaidx {
     runtime {
         memory: memory
         docker: docker
-        
         cpu: 1
     }
 
