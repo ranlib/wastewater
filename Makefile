@@ -313,3 +313,6 @@ bam_metrics_list_docu:
 run_bam_metrics_list:
 	miniwdl run --debug --dir test-bam_metrics_list --cfg miniwdl_production.cfg --input wf_bam_metrics_list.json wf_bam_metrics_list.wdl
 
+run_bam_metrics_list_no_targets:
+	miniwdl run --debug --dir test-bam_metrics_list_no_targets --cfg miniwdl_production.cfg --input wf_bam_metrics_list_no_targets.json wf_bam_metrics_list.wdl
+
