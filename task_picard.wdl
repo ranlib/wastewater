@@ -132,45 +132,49 @@ task CollectHsMetrics {
 
 task CollectMultipleMetrics {
     input {
-        File inputBam
-        File inputBamIndex
-        File referenceFasta
-        File referenceFastaDict
-        File referenceFastaFai
-        String prefix
-        Boolean collectAlignmentSummaryMetrics = true
-        Boolean collectInsertSizeMetrics = true
-        Boolean qualityScoreDistribution = true
-        Boolean meanQualityByCycle = true
-        Boolean collectBaseDistributionByCycle = true
-        Boolean collectGcBiasMetrics = true
-        #FIXME: Boolean rnaSeqMetrics = false # There is a bug in picard https://github.com/broadinstitute/picard/issues/999
-        Boolean collectSequencingArtifactMetrics = true
-        Boolean collectQualityYieldMetrics = true
-
-        Int javaXmxMb = 3072
-        Int memoryMb = javaXmxMb + 512
-        # Additional * 2 because picard multiple metrics reads the reference fasta twice.
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+      File inputBam
+      File inputBamIndex
+      File referenceFasta
+      File referenceFastaDict
+      File referenceFastaFai
+      String prefix
+      Boolean collectAlignmentSummaryMetrics = true
+      Boolean collectInsertSizeMetrics = true
+      Boolean qualityScoreDistribution = true
+      Boolean meanQualityByCycle = true
+      Boolean collectBaseDistributionByCycle = true
+      Boolean collectGcBiasMetrics = true
+      #FIXME: Boolean rnaSeqMetrics = false # There is a bug in picard https://github.com/broadinstitute/picard/issues/999
+      Boolean collectSequencingArtifactMetrics = true
+      Boolean collectQualityYieldMetrics = true
+      Boolean collectWgsMetrics = true
+      Boolean collectRawWgsMetrics = true
+      
+      Int javaXmxMb = 3072
+      Int memoryMb = javaXmxMb + 512
+      # Additional * 2 because picard multiple metrics reads the reference fasta twice.
+      String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
     }
 
     command {
-        set -e
-        mkdir -p "$(dirname ~{prefix})"
-        picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
-        CollectMultipleMetrics \
-        I=~{inputBam} \
-        R=~{referenceFasta} \
-        O=~{prefix} \
-        PROGRAM=null \
-        ~{true="PROGRAM=CollectAlignmentSummaryMetrics" false="" collectAlignmentSummaryMetrics} \
-        ~{true="PROGRAM=CollectInsertSizeMetrics" false="" collectInsertSizeMetrics} \
-        ~{true="PROGRAM=QualityScoreDistribution" false="" qualityScoreDistribution} \
-        ~{true="PROGRAM=MeanQualityByCycle" false="" meanQualityByCycle} \
-        ~{true="PROGRAM=CollectBaseDistributionByCycle" false="" collectBaseDistributionByCycle} \
-        ~{true="PROGRAM=CollectGcBiasMetrics" false="" collectGcBiasMetrics} \
-        ~{true="PROGRAM=CollectSequencingArtifactMetrics" false="" collectSequencingArtifactMetrics} \
-        ~{true="PROGRAM=CollectQualityYieldMetrics" false="" collectQualityYieldMetrics}
+      set -e
+      mkdir -p "$(dirname ~{prefix})"
+      picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
+      CollectMultipleMetrics \
+      I=~{inputBam} \
+      R=~{referenceFasta} \
+      O=~{prefix} \
+      PROGRAM=null \
+      ~{true="PROGRAM=CollectAlignmentSummaryMetrics" false="" collectAlignmentSummaryMetrics} \
+      ~{true="PROGRAM=CollectInsertSizeMetrics" false="" collectInsertSizeMetrics} \
+      ~{true="PROGRAM=QualityScoreDistribution" false="" qualityScoreDistribution} \
+      ~{true="PROGRAM=MeanQualityByCycle" false="" meanQualityByCycle} \
+      ~{true="PROGRAM=CollectBaseDistributionByCycle" false="" collectBaseDistributionByCycle} \
+      ~{true="PROGRAM=CollectGcBiasMetrics" false="" collectGcBiasMetrics} \
+      ~{true="PROGRAM=CollectSequencingArtifactMetrics" false="" collectSequencingArtifactMetrics} \
+      ~{true="PROGRAM=CollectQualityYieldMetrics" false="" collectQualityYieldMetrics}
+      ~{true="PROGRAM=CollectWgsMetrics" false="" collectWgsMetrics} \
+      ~{true="PROGRAM=CollectRawWgsMetrics" false="" collectRawWgsMetrics}
     }
 
     output {
