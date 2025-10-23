@@ -16,7 +16,7 @@ task task_mosdepth {
     command <<<
         set -euxo pipefail
         mosdepth \
-            ~{"--by " + bed_file} \
+            ~{true="--by " false="" defined(bed_file)} ~{bed_file} \
             --mapq ~{mapq} \
             --threads ~{threads} \
              ~{prefix} \
@@ -34,7 +34,7 @@ task task_mosdepth {
     runtime {
         docker: docker
         memory: memory
-        cpu: 1
+        cpu: threads
         disk: disk
     }
 }
