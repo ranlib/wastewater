@@ -3,7 +3,7 @@ version 1.0
 import "task_picard.wdl" as picard
 import "task_samtools.wdl" as samtools
 
-workflow BamMetrics {
+workflow wf_bam_metrics {
     input {
         File bam
         File bamIndex
@@ -17,10 +17,7 @@ workflow BamMetrics {
         Array[File]+? targetIntervals
         File? ampliconIntervals
 
-        Map[String, String] dockerImages = {
-            "samtools":"dbest/samtools:v1.22.1",
-            "picard":"broadinstitute/picard:3.4.0"
-        }
+        Map[String, String] dockerImages
     }
 
     String prefix = outputDir + "/" + basename(bam, ".bam")
