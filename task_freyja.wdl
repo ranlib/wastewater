@@ -6,7 +6,7 @@ task task_freyja {
     Int min_base_quality = 0
     String samplename
     String pathogen
-    String docker = "dbest/freyja:v2.0.0"
+    String docker = "dbest/freyja:v2.0.1"
     Int disk_size = 100
     String memory
     File reference
