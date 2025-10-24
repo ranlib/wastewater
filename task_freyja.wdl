@@ -16,10 +16,19 @@ task task_freyja {
   
   command <<<
     set -euxo pipefail
-    freyja update --pathogen ~{pathogen}
     freyja variants ~{bam} --variants ~{samplename}.tsv --depths ~{samplename}.depth --minq ~{min_base_quality} --ref ~{reference}
-    freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename }.demixed.tsv --pathogen ~{pathogen} --depthcutoff ~{depth_cut_off} --autoadapt
-    #--adapt 0.035
+    if [ ~{pathogen} == "SARS-CoV-2" ] ; then
+       freyja update --pathogen ~{pathogen}
+       freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --depthcutoff ~{depth_cut_off} --autoadapt
+       #--adapt 0.035
+    else
+       mkdir -p ~{pathogen}
+       freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
+       BARCODES=$(find ~{pathogen} -name "*.csv")
+       LINEAGES=$(find ~{pathogen} -name "*.yml")
+       freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --lineageyml ${LINEAGES} --barcodes ${BARCODES} --depthcutoff ~{depth_cut_off} --autoadapt
+       #--adapt 0.035
+    fi
   >>>
     
   output {
