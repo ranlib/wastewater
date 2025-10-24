@@ -1,5 +1,6 @@
 {
     "wastewater.adapters": "contamination/adapters.fa.gz",
+    "wastewater.config_file": "multiqc_config.yaml",
     "wastewater.depth_cut_off": 1,
     "wastewater.disk_multiplier": 20,
     "wastewater.disk_size": 100,
@@ -8,7 +9,7 @@
         "centrifuge": "dbest/centrifuge:v1.0.4.2",
         "fastp": "dbest/fastp:v1.0.1",
         "fastqc": "staphb/fastqc:0.12.1",
-        "freyja": "dbest/freyja:v2.0.0",
+        "freyja": "dbest/freyja:v2.0.1",
         "ivar": "staphb/ivar:1.4.4",
         "multiqc": "multiqc/multiqc:v1.30",
         "qualimap": "staphb/qualimap:2.3",

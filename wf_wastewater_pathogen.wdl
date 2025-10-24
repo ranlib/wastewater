@@ -21,6 +21,7 @@ workflow wastewater {
     Array[String]+ samplenames
     File reference
     Map[String, String] dockerImages
+    File config_file
     # bbduk
     File adapters
     File phiX
@@ -206,6 +207,7 @@ workflow wastewater {
   call multiqc.task_multiqc {
     input:
     inputFiles = allReports,
+    config_file = config_file,
     outputPrefix = "multiqc",
     docker = dockerImages["multiqc"],
     memory = memory
