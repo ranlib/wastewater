@@ -3,26 +3,32 @@ version 1.0
 task task_multiqc {
   input {
     Array[File] inputFiles
+    File? config_file 
     String outputPrefix
     String docker = "multiqc/multiqc:v1.30"
     String memory = "8GB"
     Int disk_size = 100
+    Boolean? pdf
   }
   
   command <<<
     set -euxo
     for file in ~{sep=' ' inputFiles}; do
-    if [ -e $file ] ; then
-    cp -r $file .
-    else
-    echo "<W> multiqc: $file does not exist!"
-    fi
+       if [ -e $file ] ; then
+          cp $file .
+       else
+          echo "<W> multiqc: $file does not exist!"
+       fi
     done
-    multiqc --force --no-data-dir --filename ~{outputPrefix} .
+    multiqc --force --no-data-dir \
+    ~{if defined(pdf) then "--pdf --template 'simple' " else "" } \
+    ~{if defined(config_file) then "--config " else "" } ~{config_file} \
+    --filename ~{outputPrefix} .
   >>>
 
   output {
     File report = "${outputPrefix}.html"
+    File? report_pdf = "${outputPrefix}.pdf"
   }
 
   runtime {
