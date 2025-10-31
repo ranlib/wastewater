@@ -20,14 +20,12 @@ task task_freyja {
     if [ ~{pathogen} == "SARS-CoV-2" ] ; then
        freyja update --pathogen ~{pathogen}
        freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --depthcutoff ~{depth_cut_off} --autoadapt
-       #--adapt 0.035
     else
        mkdir -p ~{pathogen}
        freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
        BARCODES=$(find ~{pathogen} -name "*.csv")
        LINEAGES=$(find ~{pathogen} -name "*.yml")
        freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --lineageyml ${LINEAGES} --barcodes ${BARCODES} --depthcutoff ~{depth_cut_off} --autoadapt
-       #--adapt 0.035
     fi
   >>>
     
