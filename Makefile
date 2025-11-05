@@ -41,8 +41,25 @@ run_wastewater_pathogen_measles:
 run_wastewater_pathogen_measles_pure:
 	miniwdl run --debug --dir test-wastewater_pathogen_measles_pure --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_measles_pure.json wf_wastewater_pathogen.wdl
 
-run_wastewater_pathogen_mpxv:
-	miniwdl run --debug --dir test-wastewater_pathogen_mpxv --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_mpxv.json wf_wastewater_pathogen.wdl
+run_wastewater_pathogen_influenza:
+	miniwdl run --debug --dir test-wastewater_pathogen_influenza --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_influenza.json wf_wastewater_pathogen.wdl
+
+#
+# wastewater_pathogen
+#
+wastewater_influenza:
+	womtool validate --inputs wf_wastewater_influenza.json wf_wastewater_influenza.wdl
+	miniwdl check wf_wastewater_influenza.wdl
+
+wastewater_influenza_docu:
+	wdl-aid wf_wastewater_influenza.wdl -o wf_wastewater_influenza.md
+	womtool graph wf_wastewater_influenza.wdl > wf_wastewater_influenza.dot
+	dot -Tpdf -o wf_wastewater_influenza.pdf wf_wastewater_influenza.dot
+	dot -Tjpeg -o wf_wastewater_influenza.jpeg wf_wastewater_influenza.dot
+	rm wf_wastewater_influenza.dot
+
+run_wastewater_influenza:
+	miniwdl run --debug --dir test-wastewater_influenza --cfg miniwdl_production.cfg --input wf_wastewater_influenza.json wf_wastewater_influenza.wdl
 
 #
 # freyja

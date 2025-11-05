@@ -1,0 +1,9 @@
+{
+    "freyja_influenza.R1": "example_data/SRR35669901_1.fastq.gz",
+    "freyja_influenza.R2": "example_data/SRR35669901_2.fastq.gz",
+    "freyja_influenza.cpus": 32,
+    "freyja_influenza.depth_cut_off": 0,
+    "freyja_influenza.min_base_quality": 0,
+    "freyja_influenza.pathogens": ["H1N1", "H3N2", "H5Nx", "FLU-B-VIC"],
+    "freyja_influenza.samplename": "SRR35669901"
+}
