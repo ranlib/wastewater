@@ -1,0 +1,140 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+
+\title{Simulation of SARS-CoV-2 Wastewater Sequencing Samples}
+\author{Dieter Best (dieter.best@cdph.ca.gov)}
+\date{\today}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\DefineVerbatimEnvironment{Code}{Verbatim}{fontsize=\small, frame=single}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose}
+This document describes a Linux-based workflow to simulate wastewater
+metagenomic sequencing data containing SARS-CoV-2 mixed with
+background microbial and human contamination. The outputs are realistic
+paired-end Illumina FASTQs suitable for testing bioinformatics
+pipelines.
+
+\section*{Workflow Overview}
+Reference genomes (virus + bacteria + human) are used as
+inputs to an Illumina read simulator. Reads are generated with
+realistic error models, then subsampled and mixed at controlled
+abundances to produce final wastewater FASTQs.
+
+\section*{Tools and Containers}
+\begin{longtable}{p{0.3\textwidth} p{0.65\textwidth}}
+\toprule
+\textbf{Tool} & \textbf{Purpose} \\
+\midrule
+art\_illumina & Simulate Illumina paired-end reads with platform-specific error profiles \\
+seqkit & FASTA/FASTQ utilities (optional) \\
+bbtools (reformat.sh) & Subsample and merge FASTQ files \\
+gzip & Compression \\
+Docker & Containerized execution for reproducibility \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Docker Images}
+\begin{Code}
+biocontainers/art_illumina:v2.5.8_cv1
+quay.io/biocontainers/seqkit:2.6.1--h9ee0642_0
+quay.io/biocontainers/bbtools:39.01--h92535d8_0
+\end{Code}
+
+\section*{Input References}
+Use a SARS-CoV-2 reference genome and one or more background genomes (e.g., bacterial genomes commonly found in wastewater, human DNA).
+
+\section*{Example Commands}
+
+\subsection*{Simulate SARS-CoV-2 Reads}
+\begin{Code}
+mkdir -p sim_reads
+
+docker run --rm -v $PWD:/data biocontainers/art_illumina:v2.5.8_cv1 \
+  art_illumina -ss HS25 -sam -i /data/sars_cov2.fasta \
+  -p -l 150 -f 5 -m 300 -s 30 \
+  -o /data/sim_reads/sars_
+\end{Code}
+
+\subsection*{Simulate Background Reads}
+\begin{Code}
+docker run --rm -v $PWD:/data biococontainers/art_illumina:v2.5.8_cv1 \
+  art_illumina -ss HS25 -sam -i /data/ecoli.fasta \
+  -p -l 150 -f 50 -m 300 -s 30 \
+  -o /data/sim_reads/ecoli_
+\end{Code}
+
+\subsection*{Human Contamination}
+\begin{Code}
+docker run --rm -v $PWD:/data biocontainers/art_illumina:v2.5.8_cv1 \
+  art_illumina -ss HS25 -sam -i /data/human.fasta \
+  -p -l 150 -f 1 -m 300 -s 30 \
+  -o /data/sim_reads/human_
+\end{Code}
+
+\section*{Subsampling and Mixing}
+Downsample reads to tune relative abundances, then concatenate to form final wastewater FASTQs.
+
+\begin{Code}
+docker run --rm -v $PWD:/data quay.io/biocontainers/bbtools:39.01--h92535d8_0 \
+  reformat.sh in1=/data/sim_reads/sars_1.fq in2=/data/sim_reads/sars_2.fq \
+  out1=/data/sim_reads/sars_sub_1.fq out2=/data/sim_reads/sars_sub_2.fq \
+  samplerate=0.02
+
+docker run --rm -v $PWD:/data quay.io/biocontainers/bbtools:39.01--h92535d8_0 \
+  reformat.sh in1=/data/sim_reads/ecoli_1.fq in2=/data/sim_reads/ecoli_2.fq \
+  out1=/data/sim_reads/ecoli_sub_1.fq out2=/data/sim_reads/ecoli_sub_2.fq \
+  samplerate=1.0
+
+cat sim_reads/*_sub_1.fq > wastewater_R1.fastq
+cat sim_reads/*_sub_2.fq > wastewater_R2.fastq
+gzip wastewater_R1.fastq wastewater_R2.fastq
+\end{Code}
+
+\section*{Scenario Tuning}
+\begin{longtable}{p{0.35\textwidth} p{0.55\textwidth}}
+\toprule
+\textbf{Scenario} & \textbf{Parameters} \\
+\midrule
+Very low viral load & Lower ART fold coverage; samplerate $\sim$0.5\% \\
+Medium viral load & Moderate ART coverage; samplerate $\sim$5\% \\
+High viral load & Higher ART coverage; samplerate $\sim$20\% \\
+Degraded RNA & Shorter read length (e.g., 75 bp) \\
+Human contamination & Increase human samplerate \\
+\bottomrule
+\end{longtable}
+
+\section*{Deliverables}
+The workflow produces paired-end FASTQs that mimic wastewater metagenomes containing SARS-CoV-2. These files can be used for pipeline validation, benchmarking, and QA testing.
+
+\section*{Reproducibility Notes}
+\begin{itemize}
+  \item Pin container versions.
+  \item Record random seeds (where applicable).
+  \item Archive reference FASTA checksums.
+  \item Log abundance parameters used for each simulated sample.
+\end{itemize}
+
+\end{document}
