@@ -41,53 +41,53 @@
     "simulate_wastewater_multi_strain.read_length": 150,
     "simulate_wastewater_multi_strain.sample_ids": [
         "ww_low",
-	"ww_medium",
-	"ww_high"
+        "ww_medium",
+        "ww_high"
     ],
     "simulate_wastewater_multi_strain.sars_baseline_fasta": "references/SARS-CoV-2.reference.fasta",
     "simulate_wastewater_multi_strain.sars_fastas": [
         "references/SARS-CoV-2.reference.fasta",
-	"references/sars_omicron_ba1.fasta",
-	"references/sars_omicron_ba2.fasta"
+        "references/sars_omicron_ba1.fasta",
+        "references/sars_omicron_ba2.fasta"
     ],
     "simulate_wastewater_multi_strain.sars_fold_coverage_matrix": [
         [
             1,
             0,
-	    0
+            0
         ],
         [
             5,
             2,
-	    2
+            2
         ],
         [
             20,
             5,
-	    5
+            5
         ]
     ],
     "simulate_wastewater_multi_strain.sars_samplerate_matrix": [
         [
             0.005,
             0,
-	    0
+            0
         ],
         [
             0.02,
             0.01,
-	    0.01
+            0.01
         ],
         [
             0.1,
             0.02,
-	    0.02
+            0.02
         ]
     ],
     "simulate_wastewater_multi_strain.sars_strain_names": [
         "wuhan",
-	"omicron_ba1",
-	"omicron_ba2"
+        "omicron_ba1",
+        "omicron_ba2"
     ],
     "simulate_wastewater_multi_strain.simulate_background.memory": "10GB",
     "simulate_wastewater_multi_strain.simulate_background.threads": 4,
