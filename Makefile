@@ -333,3 +333,20 @@ run_bam_metrics_list:
 run_bam_metrics_list_no_targets:
 	miniwdl run --debug --dir test-bam_metrics_list_no_targets --cfg miniwdl_production.cfg --input wf_bam_metrics_list_no_targets.json wf_bam_metrics_list.wdl
 
+#
+# wastewater_simulator
+#
+wastewater_simulator:
+	womtool validate --inputs wastewater_simulator.json wastewater_simulator.wdl
+	miniwdl check wastewater_simulator.wdl
+
+wastewater_simulator_docu:
+	wdl-aid wastewater_simulator.wdl -o wastewater_simulator.md
+	womtool graph wastewater_simulator.wdl > wastewater_simulator.dot
+	dot -Tpdf -o wastewater_simulator.pdf wastewater_simulator.dot
+	dot -Tjpeg -o wastewater_simulator.jpeg wastewater_simulator.dot
+	rm wastewater_simulator.dot
+
+run_wastewater_simulator:
+	miniwdl run --debug --dir test-wastewater_simulator --cfg miniwdl_production.cfg --input wastewater_simulator.json wastewater_simulator.wdl
+
