@@ -365,10 +365,10 @@ task write_truth_metadata {
 
         echo "sample,strain,fold_coverage,samplerate,truth_vcf" > truth_~{sample_id}.csv
         for i in "${!arr_name[@]}"; do
-        echo "~{sample_id},${arr_name[$i]},${arr_fold[$i]},${arr_rate[$i]},${arr_vcfs[$i]}" >> truth_~{sample_id}.csv
+           echo "~{sample_id},${arr_name[$i]},${arr_fold[$i]},${arr_rate[$i]},${arr_vcfs[$i]}" >> truth_~{sample_id}.csv
         done
 
-        echo "sample,organism,fold_coverage,samplerate" >> truth_~{sample_id}.csv
+        #echo "sample,organism,fold_coverage,samplerate" >> truth_~{sample_id}.csv
         echo "~{sample_id},background,~{background_fold_coverage},~{background_samplerate}" >> truth_~{sample_id}.csv
         echo "~{sample_id},host,~{host_fold_coverage},~{host_samplerate}" >> truth_~{sample_id}.csv
     >>>
