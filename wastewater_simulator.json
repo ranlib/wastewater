@@ -20,8 +20,10 @@
         ],
         []
     ],
+    "simulate_wastewater_multi_strain.fastqc.threads": 12,
     "simulate_wastewater_multi_strain.frag_mean": 250,
     "simulate_wastewater_multi_strain.frag_sd": 150,
+    "simulate_wastewater_multi_strain.host_fasta": "references/hg38.fa",
     "simulate_wastewater_multi_strain.host_fold_coverage": [
         1,
         1,
@@ -32,7 +34,11 @@
         0.01,
         0.01
     ],
+    "simulate_wastewater_multi_strain.illumina_platform": "MSv3",
+    "simulate_wastewater_multi_strain.insert_sd": 30,
+    "simulate_wastewater_multi_strain.mean_insert": 300,
     "simulate_wastewater_multi_strain.primer_bed": "primers/artic_v5_3_2_primers.bed",
+    "simulate_wastewater_multi_strain.read_length": 150,
     "simulate_wastewater_multi_strain.sample_ids": [
         "ww_low",
 	"ww_medium",
@@ -83,6 +89,12 @@
 	"omicron_ba1",
 	"omicron_ba2"
     ],
+    "simulate_wastewater_multi_strain.simulate_background.memory": "10GB",
+    "simulate_wastewater_multi_strain.simulate_background.threads": 4,
     "simulate_wastewater_multi_strain.simulate_fragmentation": true,
-    "simulate_wastewater_multi_strain.simulate_primer_dropout": true
+    "simulate_wastewater_multi_strain.simulate_host.memory": "10GB",
+    "simulate_wastewater_multi_strain.simulate_host.threads": 4,
+    "simulate_wastewater_multi_strain.simulate_primer_dropout": true,
+    "simulate_wastewater_multi_strain.simulate_sars.memory": "10GB",
+    "simulate_wastewater_multi_strain.simulate_sars.threads": 4
 }

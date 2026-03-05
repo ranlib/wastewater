@@ -159,7 +159,7 @@ workflow simulate_wastewater_multi_strain {
         call merge_fastqs {
             input:
             r1s = flatten([subsample_sars.r1_sub,[subsample_background.r1_sub],r1_host]),
-            r2s = flatten([subsample_sars.r2_sub,[subsample_background.r2_sub],r1_host]),
+            r2s = flatten([subsample_sars.r2_sub,[subsample_background.r2_sub],r2_host]),
             sample_id = sample_ids[i]
         }
 
@@ -202,6 +202,8 @@ workflow simulate_wastewater_multi_strain {
         File multiqc_report = multiqc.report_html
         Array[File] truth_csvs = write_truth_metadata.truth_csv
         File combined_truth_manifest = combine_truth_metadata.truth_manifest
+        Array[File] truth_vcf = merge_truth_vcfs.merged_truth_vcf
+        Array[File] truth_vcf_index = merge_truth_vcfs.merged_truth_vcf_index
     }
 } # end workflow
 
