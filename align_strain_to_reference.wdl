@@ -15,8 +15,7 @@ workflow align_strain_to_reference {
 
   call minimap2_align {
     input:
-      #reference_mmi = minimap2_index_reference.mmi,
-      reference_mmi = baseline_fasta,
+      reference_mmi = minimap2_index_reference.mmi,
       strain_fasta = strain_fasta,
       strain_name = strain_name
   }
