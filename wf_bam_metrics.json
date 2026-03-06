@@ -9,7 +9,7 @@
     "BamMetrics.collectAlignmentSummaryMetrics": true,
     "BamMetrics.dockerImages": {
         "picard": "quay.io/biocontainers/picard:3.4.0--hdfd78af_0",
-        "samtools": "dbest/samtools:v1.22.1"
+        "samtools": "dbest/samtools:v1.23"
     },
     "BamMetrics.meanQualityByCycle": true,
     "BamMetrics.outputDir": ".",

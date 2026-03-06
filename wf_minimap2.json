@@ -7,7 +7,7 @@
     "wf_minimap2.Mapping.skipSelfAndDualMappings": false,
     "wf_minimap2.Mapping.softClippingForSupplementaryAlignments": true,
     "wf_minimap2.Mapping.writeLongCigar": true,
-    "wf_minimap2.docker": "staphb/minimap2:2.29",
+    "wf_minimap2.docker": "staphb/minimap2:2.30",
     "wf_minimap2.memory": "4G",
     "wf_minimap2.outputPrefix": "SRR13182925",
     "wf_minimap2.read1": "example_data/SRR13182925_1.fastq.gz",

@@ -1,6 +1,6 @@
 {
   "wf_ivar.docker_ivar": "staphb/ivar:1.4.4",
-  "wf_ivar.docker_samtools": "dbest/samtools:v1.22.1",
+  "wf_ivar.docker_samtools": "dbest/samtools:v1.23",
   "wf_ivar.include_reads_with_no_primers": true,
   "wf_ivar.keep_reads_qc_fail": true,
   "wf_ivar.min_quality_score": 20,
