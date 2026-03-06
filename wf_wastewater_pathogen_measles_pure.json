@@ -1,12 +1,20 @@
 {
+    "wastewater.task_centrifuge.docker": "dbest/centrifuge:v1.0.4.2",
+    "wastewater.task_kreport.docker": "dbest/centrifuge:v1.0.4.2",
+    "wastewater.indexFiles": [
+	"/home/dbest/data/centrifuge/hpvc.1.cf",
+        "/home/dbest/data/centrifuge/hpvc.2.cf",
+        "/home/dbest/data/centrifuge/hpvc.3.cf",
+        "/home/dbest/data/centrifuge/hpvc.4.cf"
+    ],
     "wastewater.depth_cut_off": 0,
     "wastewater.docker_fastqc": "staphb/fastqc:0.12.1",
     "wastewater.docker_fastp": "dbest/fastp:v1.0.1",
     "wastewater.docker_minimap2": "dbest/minimap2:2.30",
-    "wastewater.docker_freyja": "dbest/freyja:v2.0.0",
-    "wastewater.docker_multiqc": "multiqc/multiqc:v1.28",
+    "wastewater.docker_freyja": "dbest/freyja:v2.0.3",
+    "wastewater.docker_multiqc": "multiqc/multiqc:v1.33",
     "wastewater.min_base_quality": 0,
-    "wastewater.pathogen": "MEASLES",
+    "wastewater.pathogen": "MEASLESgenome",
     "wastewater.read1": "example_data/GCA-031128185.1-simulated_R1.fastq.gz",
     "wastewater.read2": "example_data/GCA-031128185.1-simulated_R2.fastq.gz",
     "wastewater.reference": "references/measles-reference.fasta",
