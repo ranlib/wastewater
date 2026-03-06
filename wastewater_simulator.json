@@ -12,11 +12,11 @@
     ],
     "simulate_wastewater_multi_strain.dropout_tiles": [
         [
-            3,
-            7
+            400,
+            4000
         ],
         [
-            12
+            4008
         ],
         []
     ],

@@ -56,6 +56,13 @@ workflow simulate_wastewater_multi_strain {
                     dropout_tiles = dropout_tiles[i],
                     prefix = sample_ids[i] + ".sars." + sars_strain_names[j]
                 }
+                call compute_coverage_holes {
+                    input:
+                    baseline_fasta = sars_baseline_fasta,
+                    dropout_bed = mask_primer_tiles.dropout_bed,
+                    sample_name = sample_ids[i],
+                    prefix = sample_ids[i] + ".sars." + sars_strain_names[j]
+                }
             }
 
             # Step 2: fragmentation
@@ -199,11 +206,13 @@ workflow simulate_wastewater_multi_strain {
     output {
         Array[File] wastewater_R1 = merge_fastqs.out_r1
         Array[File] wastewater_R2 = merge_fastqs.out_r2
-        File multiqc_report = multiqc.report_html
         Array[File] truth_csvs = write_truth_metadata.truth_csv
-        File combined_truth_manifest = combine_truth_metadata.truth_manifest
         Array[File] truth_vcf = merge_truth_vcfs.merged_truth_vcf
         Array[File] truth_vcf_index = merge_truth_vcfs.merged_truth_vcf_index
+        Array[Array[File?]] coverage_hole_regions = compute_coverage_holes.hole_regions
+        Array[Array[File?]] coverage_hole_metrics = compute_coverage_holes.hole_metrics_json
+        File combined_truth_manifest = combine_truth_metadata.truth_manifest
+        File multiqc_report = multiqc.report_html
     }
 } # end workflow
 
@@ -448,16 +457,18 @@ task mask_primer_tiles {
         cp ~{reference_fasta} masked.fasta
         if [[ ~{length(dropout_tiles)} -gt 0 ]]; then
            for tile in ~{sep=' ' dropout_tiles}; do
-              awk -v t=$tile '$4==t {print $1"\t"$2"\t"$3}' ~{primer_bed} >> drop.bed
+              awk -v t=$tile '$4 ~ t {print $1"\t"$2"\t"$3}' ~{primer_bed} >> ~{prefix}.dropout.bed
            done
-           bedtools maskfasta -fi masked.fasta -bed drop.bed -fo ~{prefix}.masked.fasta
+           bedtools maskfasta -fi masked.fasta -bed ~{prefix}.dropout.bed -fo ~{prefix}.masked.fasta
         else
-           cp ~{reference_fasta} ~{prefix}.masked.fasta
+          cp ~{reference_fasta} ~{prefix}.masked.fasta
+          touch ~{prefix}.dropout.bed
         fi
     >>>
 
     output {
         File masked_fasta = "~{prefix}.masked.fasta"
+        File dropout_bed = "~{prefix}.dropout.bed"
     }
 
     runtime {
@@ -514,6 +525,49 @@ task merge_truth_vcfs {
 
     runtime {
         docker: "dbest/samtools:v1.23"
+        cpu: 1
+        memory: "2G"
+    }
+}
+
+task compute_coverage_holes {
+
+    input {
+        File baseline_fasta
+        File dropout_bed
+        String sample_name
+        String prefix
+    }
+
+    command <<<
+        set -euxo pipefail
+
+        GENOME_SIZE=$(grep -v ">" ~{baseline_fasta} | tr -d '\n' | wc -c)
+
+        cat ~{dropout_bed} | sort -k1,1 -k2,2n > ~{prefix}.holes.bed
+        NUM_HOLES=$(wc -l < ~{prefix}.holes.bed)
+        TOTAL_BP=$(awk '{sum += $3-$2} END {print sum}' ~{prefix}.holes.bed)
+
+        HOLE_FRAC=$(awk -v h="$TOTAL_BP" -v g="$GENOME_SIZE" 'BEGIN {print h / g}')
+
+        cat <<EOF > ~{prefix}.coverage_hole_metrics.json
+        {
+            "sample": "~{sample_name}",
+            "num_coverage_holes": $NUM_HOLES,
+            "total_hole_bp": $TOTAL_BP,
+            "hole_fraction": $HOLE_FRAC
+        }
+        EOF
+
+    >>>
+
+    output {
+        File hole_regions = "~{prefix}.holes.bed"
+        File hole_metrics_json = "~{prefix}.coverage_hole_metrics.json"
+    }
+
+    runtime {
+        docker: "ubuntu:25.04"
         cpu: 1
         memory: "2G"
     }
