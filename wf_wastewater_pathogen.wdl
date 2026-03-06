@@ -9,7 +9,7 @@ import "wf_minimap2.wdl" as minimap2
 import "wf_ivar.wdl" as ivar
 import "task_qualimap.wdl" as qualimap
 import "wf_bam_metrics.wdl" as bam_metrics
-import "task_collect_wgs_metrics.wdl" as wgsQC
+import "task_collect_wgs_metrics.wdl" as wgsqc
 import "wf_mosdepth.wdl" as mosdepth
 import "task_freyja.wdl" as freyja
 import "task_multiqc.wdl" as multiqc
@@ -116,20 +116,6 @@ workflow wastewater {
       outputPrefix = samplenames[indx]
     }
     
-    call ivar.wf_ivar {
-      input:
-      raw_bam = wf_minimap2.bam,
-      sample_name = samplenames[indx],
-      primers_bed = primers_bed,
-      min_trimmed_length = min_trimmed_length,
-      min_quality_score = min_quality_score,
-      include_reads_with_no_primers = include_reads_with_no_primers,
-      keep_reads_qc_fail = keep_reads_qc_fail,
-      threads = threads,
-      docker_samtools = dockerImages["samtools"],
-      docker_ivar = dockerImages["ivar"]
-    }
-    
     call qualimap.task_qualimap_bamqc {
       input:
       bam = wf_minimap2.bam,
@@ -161,7 +147,7 @@ workflow wastewater {
       dockerImages = { "samtools": dockerImages["samtools"], "picard": dockerImages["picard"] }
     }
     
-    call wgsQC.task_collect_wgs_metrics {
+    call wgsqc.task_collect_wgs_metrics {
       input:
       bam = wf_minimap2.bam,
       reference = reference
@@ -178,6 +164,20 @@ workflow wastewater {
       memory = memory,
       disk = "10GB",
       docker = dockerImages["mosdepth"]
+    }
+    
+    call ivar.wf_ivar {
+      input:
+      raw_bam = wf_minimap2.bam,
+      sample_name = samplenames[indx],
+      primers_bed = primers_bed,
+      min_trimmed_length = min_trimmed_length,
+      min_quality_score = min_quality_score,
+      include_reads_with_no_primers = include_reads_with_no_primers,
+      keep_reads_qc_fail = keep_reads_qc_fail,
+      threads = threads,
+      docker_samtools = dockerImages["samtools"],
+      docker_ivar = dockerImages["ivar"]
     }
     
     call freyja.task_freyja {
