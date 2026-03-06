@@ -6,7 +6,7 @@ task task_freyja {
     Int min_base_quality = 0
     String samplename
     String pathogen
-    String docker = "dbest/freyja:v2.0.1"
+    String docker = "dbest/freyja:v2.0.3"
     Int disk_size = 100
     String memory
     File reference
@@ -16,7 +16,7 @@ task task_freyja {
   
   command <<<
     set -euxo pipefail
-    git clone https://github.com/andersen-lab/Freyja-barcodes.git
+    #git clone https://github.com/andersen-lab/Freyja-barcodes.git
     freyja variants ~{bam} --variants ~{samplename}.tsv --depths ~{samplename}.depth --minq ~{min_base_quality} --ref ~{reference}
     if [ ~{pathogen} == "SARS-CoV-2" ] ; then
        freyja update --pathogen ~{pathogen}
@@ -24,8 +24,8 @@ task task_freyja {
     else
        mkdir -p ~{pathogen}
        freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
-       BARCODES=$(find ~{pathogen} -name "*.csv")
-       LINEAGES=$(find ~{pathogen} -name "*.yml")
+       BARCODES=$(find ~{pathogen} -type f -name "*.csv")
+       LINEAGES=$(find ~{pathogen} -type f -name "*lineages*.yml")
        freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --lineageyml ${LINEAGES} --barcodes ${BARCODES} --depthcutoff ~{depth_cut_off} --autoadapt
     fi
   >>>
@@ -49,7 +49,7 @@ task aggregate {
     
         String? file_extension
         String output_filename = "aggregated_result.tsv"
-        String docker = "dbest/freyja:v2.0.1"
+        String docker = "dbest/freyja:v2.0.3"
     }
 
     command <<<
@@ -92,7 +92,7 @@ task demix {
         Boolean confirmed_only = false # Exclude unconfirmed lineages
 
         Float adapt = 0.0           # Adaptive lasso penalty parameter (0.0 for standard lasso)
-        Float a_eps = 1e-08         # Adaptive lasso parameter, hard threshold
+        Float a_eps = 0.00000008         # Adaptive lasso parameter, hard threshold
         Boolean auto_adapt = false  # Use error profile to set adapt
         String solver = "CLARABEL"  # Solver used for estimating lineage prevalence
         Int max_solver_threads = 1  # Max threads for multithreaded solvers (0 for auto)
@@ -101,7 +101,7 @@ task demix {
         Boolean relaxed_mrca = false  # Clusters are assigned robust mrca
         Float relaxed_thresh = 0.9    # Associated threshold for robust mrca function
 
-        String docker = "dbest/freyja:v2.0.1"
+        String docker = "dbest/freyja:v2.0.3"
     }
 
     command <<<
@@ -167,7 +167,7 @@ task variants {
         File? annotation_gff3            # Annotation file in gff3 format (--annot).
 
         # --- Runtime Configuration ---
-        String docker = "dbest/freyja:v2.0.1"
+        String docker = "dbest/freyja:v2.0.3"
     }
 
     command <<<
@@ -228,7 +228,7 @@ task boot {
         Float relaxed_thresh = 0.9     # Associated threshold for robust MRCA function (--relaxedthresh).
         Boolean auto_adapt = false     # Use error profile to set adapt (--autoadapt).
 
-        String docker_image = "dbest/freyja:v2.0.1"
+        String docker_image = "dbest/freyja:v2.0.3"
     }
 
     command <<<
@@ -270,8 +270,8 @@ task boot {
 
     output {
         File bootstrap_summary = "~{output_base_name}_bootstraps.tsv"
-        File? raw_bootstraps_output = if (raw_bootstraps) then "~{output_base_name}.boot.json" else null
-        File? boxplot_image = if (defined(boxplot_format)) then "~{output_base_name}_boxplot.~{boxplot_format}" else null
+        File? raw_bootstraps_output = if (raw_bootstraps) then "~{output_base_name}.boot.json" else ""
+        File? boxplot_image = if (defined(boxplot_format)) then "~{output_base_name}_boxplot.~{boxplot_format}" else ""
     }
 
     runtime {
@@ -288,7 +288,7 @@ task update {
         String output_directory = "updated_freyja_data" # Output directory (--outdir).
         Boolean noncl_flag = false       # Includes the --noncl flag if true.
         Boolean build_locally = false    # Perform barcode building locally (--buildlocal).
-        String docker_image = "dbest/freyja:v2.0.1"
+        String docker_image = "dbest/freyja:v2.0.3"
     }
 
     command <<<
@@ -305,7 +305,7 @@ task update {
     >>>
 
     output {
-        Directory updated_data_dir = "~{output_directory}"
+        Array[File] updated_data_dir =  glob(output_directory + "/*")
     }
 
     runtime {
