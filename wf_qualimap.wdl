@@ -29,7 +29,7 @@ workflow wf_qualimap_bamqc {
     input:
     inputFiles = reports_bam,
     outputPrefix = "multiqc",
-    docker = "multiqc/multiqc:v1.30",
+    docker = "multiqc/multiqc:v1.33",
     memory = memory
   }
 

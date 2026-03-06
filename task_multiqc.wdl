@@ -5,7 +5,7 @@ task task_multiqc {
     Array[File] inputFiles
     File? config_file 
     String outputPrefix
-    String docker = "multiqc/multiqc:v1.30"
+    String docker = "multiqc/multiqc:v1.33"
     String memory = "8GB"
     Int disk_size = 100
     Boolean? pdf

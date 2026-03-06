@@ -12,7 +12,7 @@ task Indexing {
     
     Int cores = 1
     String memory = "4G"
-    String docker = "staphb/minimap2:2.29"
+    String docker = "staphb/minimap2:2.30"
   }
   
   command {
@@ -79,7 +79,7 @@ task Mapping {
     
     Int cores = 4
     String memory = "30G"
-    String docker = "staphb/minimap2:2.29"
+    String docker = "staphb/minimap2:2.30"
   }
 
   String output_file = outputPrefix + ".sam"

@@ -58,7 +58,7 @@ workflow wf_ivar {
     Boolean keep_reads_qc_fail
     File? amplicon_information_file
     String docker_ivar = "staphb/ivar:1.4.4"
-    String docker_samtools = "dbest/samtools:v1.22.1"
+    String docker_samtools = "dbest/samtools:v1.23"
     
   }
   

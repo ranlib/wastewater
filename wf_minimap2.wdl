@@ -10,7 +10,7 @@ workflow wf_minimap2 {
     File read2
     String outputPrefix
     String samplename
-    Map[String,String] dockerImages = { "minimap": "staphb/minimap2:2.29", "samtools": "dbest/samtools:v1.22.1" }
+    Map[String,String] dockerImages = { "minimap": "staphb/minimap2:2.30", "samtools": "dbest/samtools:v1.23" }
     String memory = "32G"
     Int threads = 1
   }
