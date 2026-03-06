@@ -80,7 +80,7 @@ task DictAndFaidx {
     input {
         File inputFile
         String memory = "3GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     String outputFile = basename(inputFile)
@@ -124,7 +124,7 @@ task Faidx {
         String outputDir
 
         String memory = "2GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command {
@@ -172,7 +172,7 @@ task Fastq {
 
         Int threads = 1
         String memory = "1GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command {
@@ -234,7 +234,7 @@ task FilterShortReadsBam {
         String outputPathBam
 
         String memory = "1GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     String outputPathBamIndex = sub(outputPathBam, ".bam", ".bai")
@@ -279,7 +279,7 @@ task Flagstat {
         Int threads = 1
 
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command <<<
@@ -319,7 +319,7 @@ task Idxstats {
         File inputBam
         String outputPath
         String memory = "256MiB"  # Only 40.5 MiB used for 150G bam file.
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command <<<
@@ -357,7 +357,7 @@ task Index {
         Int threads = 1
 
         String memory = "2GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     # Select_first is needed, otherwise womtool validate fails.
@@ -411,7 +411,7 @@ task Markdup {
         String outputBamPath
         Int threads = 1
 
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command {
@@ -457,7 +457,7 @@ task Merge {
         # Use one thread per input + one for the output + one for merging
         Int threads = length(bamFiles) + 2
         String memory = "4GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     String indexPath = sub(outputBamPath, ".bam",".bai")
@@ -513,7 +513,7 @@ task Quickcheck {
     input {
         File inputBam
 
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command {
@@ -552,7 +552,7 @@ task Sort {
         Int memoryPerThreadGb = 4
         Int threads = 1
         Int memoryGb = 1 + threads * memoryPerThreadGb
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     String bamIndexPath = sub(outputPath, ".bam", ".bai")
@@ -612,7 +612,7 @@ task Split {
 
         Int threads = 1
         String memory = "1GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     command {
@@ -720,7 +720,7 @@ task View {
 
         Int threads = 1
         String memory = "1GiB"
-        String docker = "dbest/samtools:v1.22.1"
+        String docker = "dbest/samtools:v1.23"
     }
 
     String outputIndexPath = basename(outputFileName) + ".bai"
@@ -811,7 +811,7 @@ task Stats {
     Int disk_gb = 20
     
     String outputPath
-    String docker = "dbest/samtools:v1.22.1"
+    String docker = "dbest/samtools:v1.23"
   }
   
   command <<<
