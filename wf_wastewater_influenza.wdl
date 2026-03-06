@@ -141,7 +141,7 @@ task sort_bam {
   }
 
   runtime {
-    docker: "dbest/samtools:v1.22.1"
+    docker: "dbest/samtools:v1.23"
     cpu: cpus
   }
 }
@@ -171,7 +171,7 @@ task freyja_variants {
   }
 
   runtime {
-    docker: "dbest/freyja:v2.0.1"
+    docker: "dbest/freyja:v2.0.3"
   }
 }
 
@@ -206,7 +206,7 @@ task freyja_demix {
   }
 
   runtime {
-    docker: "dbest/freyja:v2.0.1"
+    docker: "dbest/freyja:v2.0.3"
   }
 }
 
@@ -247,7 +247,7 @@ task freyja_boot {
   }
 
   runtime {
-    docker: "dbest/freyja:v2.0.1"
+    docker: "dbest/freyja:v2.0.3"
     cpu: cpus
   }
 }
@@ -284,6 +284,6 @@ task aggregate_demix {
   }
 
   runtime {
-    docker: "dbest/freyja:v2.0.1"
+    docker: "dbest/freyja:v2.0.3"
   }
 }
