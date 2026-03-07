@@ -1,0 +1,320 @@
+
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{float}
+\geometry{margin=1in}
+
+\title{Standard Operating Procedure (SOP)\\Wastewater Pathogen Sequencing Analysis Pipeline}
+\author{Dieter Best}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Purpose}
+This document describes the Standard Operating Procedure (SOP) for running the wastewater pathogen sequencing pipeline. The pipeline processes Illumina paired-end sequencing data from wastewater samples to:
+
+\begin{itemize}
+\item Perform read quality control
+\item Remove contaminants and sequencing artifacts
+\item Classify microbial reads
+\item Align reads to a pathogen reference genome
+\item Perform primer trimming and variant analysis
+\item Estimate lineage composition
+\item Generate coverage and quality metrics
+\item Produce a consolidated MultiQC report
+\end{itemize}
+
+The pipeline is implemented in Workflow Description Language (WDL) and executed using workflow engines such as Cromwell.
+
+\section{Scope}
+
+This pipeline is designed for analysis of:
+
+\begin{itemize}
+\item Wastewater sequencing samples
+\item Illumina paired-end FASTQ data
+\item Amplicon-based pathogen sequencing
+\end{itemize}
+
+Typical targets include:
+
+\begin{itemize}
+\item SARS-CoV-2
+\item Influenza
+\item RSV
+\item Other viral pathogens
+\end{itemize}
+
+\section{Pipeline Overview}
+
+The workflow performs the following major stages:
+
+\begin{enumerate}
+\item Raw read quality control
+\item Read trimming and contaminant removal
+\item Optional taxonomic classification
+\item Alignment to pathogen reference genome
+\item Alignment quality assessment
+\item Primer trimming
+\item Coverage calculation
+\item Variant and lineage analysis
+\item Aggregated reporting
+\end{enumerate}
+
+Each sample is processed independently using WDL scatter parallelization.
+
+\section{Input Data}
+
+\subsection{Sequencing Reads}
+
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{Input} & \textbf{Description} \\
+reads1 & Forward FASTQ files \\
+reads2 & Reverse FASTQ files \\
+samplenames & Sample identifiers \\
+\end{longtable}
+
+\subsection{Reference Data}
+
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{Input} & \textbf{Description} \\
+reference & Pathogen reference genome \\
+primers & Primer sequences \\
+primers\_bed & Primer coordinates \\
+\end{longtable}
+
+\subsection{Adapter and Contamination Databases}
+
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{File} & \textbf{Purpose} \\
+adapters & Adapter sequences \\
+phiX & PhiX contamination removal \\
+polyA & Poly-A removal \\
+\end{longtable}
+
+\subsection{Taxonomic Classification (Optional)}
+
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{Input} & \textbf{Description} \\
+run\_centrifuge & Enable classification \\
+indexFiles & Centrifuge database \\
+\end{longtable}
+
+\subsection{Variant and Lineage Analysis}
+
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{Input} & \textbf{Description} \\
+pathogen & Pathogen name \\
+depth\_cut\_off & Minimum depth for lineage analysis \\
+min\_base\_quality & Minimum base quality \\
+\end{longtable}
+
+\section{Pipeline Steps}
+
+\subsection{Read Quality Control}
+
+\textbf{Tool:} FastQC
+
+Purpose:
+
+\begin{itemize}
+\item Evaluate base quality scores
+\item Assess GC content
+\item Detect adapter contamination
+\item Identify overrepresented sequences
+\end{itemize}
+
+Outputs include HTML reports and QC metrics.
+
+\subsection{Read Trimming and Filtering}
+
+\textbf{Tool:} fastp
+
+Purpose:
+
+\begin{itemize}
+\item Remove adapter sequences
+\item Trim low-quality bases
+\item Filter short reads
+\end{itemize}
+
+Outputs:
+
+\begin{itemize}
+\item Cleaned FASTQ files
+\item JSON QC report
+\item HTML QC report
+\end{itemize}
+
+\subsection{Contamination Removal}
+
+\textbf{Tool:} BBDuk
+
+Purpose:
+
+Removes sequencing contaminants including:
+
+\begin{itemize}
+\item Adapter sequences
+\item PhiX control reads
+\item Poly-A artifacts
+\item Primer sequences
+\end{itemize}
+
+Outputs cleaned FASTQ files and contamination statistics.
+
+\subsection{Taxonomic Classification}
+
+\textbf{Tool:} Centrifuge
+
+This optional step classifies reads taxonomically to identify organisms present in wastewater samples.
+
+Outputs include classification tables and summary statistics.
+
+\subsection{Alignment to Pathogen Reference}
+
+\textbf{Tool:} Minimap2
+
+Reads are aligned to the pathogen reference genome to generate BAM alignment files.
+
+\subsection{Alignment Quality Assessment}
+
+\textbf{Tool:} Qualimap
+
+Calculates:
+
+\begin{itemize}
+\item coverage statistics
+\item insert size distribution
+\item mapping quality
+\item GC bias
+\end{itemize}
+
+\subsection{BAM Metrics Collection}
+
+\textbf{Tools:} Picard and Samtools
+
+Generates alignment summary metrics and quality-by-cycle metrics.
+
+\subsection{Whole Genome Metrics}
+
+\textbf{Tool:} GATK
+
+Collects genome-wide coverage statistics.
+
+\subsection{Coverage Calculation}
+
+\textbf{Tool:} Mosdepth
+
+Computes coverage depth across the genome and across targeted primer regions.
+
+Outputs:
+
+\begin{itemize}
+\item Per-base coverage
+\item Coverage summary
+\item Coverage distribution
+\end{itemize}
+
+\subsection{Primer Trimming}
+
+\textbf{Tool:} iVar
+
+Removes primer sequences from aligned reads and prepares alignments for variant analysis.
+
+\subsection{Lineage and Variant Deconvolution}
+
+\textbf{Tool:} Freyja
+
+Estimates lineage composition in mixed wastewater samples and identifies pathogen variants.
+
+Outputs include lineage abundance estimates and variant calls.
+
+\section{MultiQC Reporting}
+
+All pipeline metrics are aggregated into a single report using MultiQC.
+
+The report includes:
+
+\begin{itemize}
+\item FastQC metrics
+\item fastp trimming statistics
+\item alignment metrics
+\item coverage statistics
+\item lineage composition
+\end{itemize}
+
+\section{Pipeline Flow Diagram}
+
+\begin{verbatim}
+Raw FASTQ
+   |
+   v
+FastQC
+   |
+   v
+fastp trimming
+   |
+   v
+BBDuk contaminant removal
+   |
+   +---- Centrifuge classification (optional)
+   |
+   v
+Minimap2 alignment
+   |
+   v
+Qualimap QC
+   |
+   v
+Picard / WGS metrics
+   |
+   v
+Mosdepth coverage
+   |
+   v
+iVar primer trimming
+   |
+   v
+Freyja lineage analysis
+   |
+   v
+MultiQC report
+\end{verbatim}
+
+\section{Parallel Execution}
+
+Samples are processed in parallel using WDL scatter blocks, allowing efficient processing of large sample batches.
+
+\section{Containerization}
+
+All tools are executed within Docker containers defined in the pipeline configuration. This ensures reproducibility and consistent software environments.
+
+\section{Example Execution}
+
+Example Cromwell command:
+
+\begin{lstlisting}
+java -jar cromwell.jar run wf_wastewater_pathogen.wdl \
+  --inputs inputs.json
+\end{lstlisting}
+
+\section{Pipeline Outputs}
+
+Major outputs include:
+
+\begin{itemize}
+\item FastQC reports
+\item trimmed FASTQ files
+\item BAM alignment files
+\item coverage metrics
+\item lineage estimates
+\item MultiQC report
+\end{itemize}
+
+\end{document}
