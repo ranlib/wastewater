@@ -35,10 +35,10 @@
     "wastewater.polyA": "contamination/polyA.fa.gz",
     "wastewater.primers": "primers/SARS-CoV-2.scheme.fa.gz",
     "wastewater.primers_bed": "primers/SARS-CoV-2.scheme.bed",
-    "wastewater.reads1": [ "example_data/measles-mixed-simulated_R1.fastq.gz" ],
-    "wastewater.reads2": [ "example_data/measles-mixed-simulated_R2.fastq.gz" ],
+    "wastewater.reads1": [ "example_data/SRR37379475_1.fastq.gz" ],
+    "wastewater.reads2": [ "example_data/SRR37379475_2.fastq.gz" ],
     "wastewater.reference": "references/measles-reference.fasta",
     "wastewater.run_centrifuge": true,
-    "wastewater.samplenames": ["measles-mixed-simulated"],
+    "wastewater.samplenames": ["SRR37379475"],
     "wastewater.threads": 32
 }
