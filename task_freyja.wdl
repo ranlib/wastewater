@@ -16,16 +16,26 @@ task task_freyja {
   
   command <<<
     set -euxo pipefail
-    #git clone https://github.com/andersen-lab/Freyja-barcodes.git
     freyja variants ~{bam} --variants ~{samplename}.tsv --depths ~{samplename}.depth --minq ~{min_base_quality} --ref ~{reference}
     if [ ~{pathogen} == "SARS-CoV-2" ] ; then
        freyja update --pathogen ~{pathogen}
        freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --depthcutoff ~{depth_cut_off} --autoadapt
-    else
+    elif [ ~{pathogen} == "MEASLESgenome" ] ; then
        mkdir -p ~{pathogen}
        freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
        BARCODES=$(find ~{pathogen} -type f -name "*.csv")
        LINEAGES=$(find ~{pathogen} -type f -name "*lineages*.yml")
+       freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --lineageyml ${LINEAGES} --barcodes ${BARCODES} --depthcutoff ~{depth_cut_off} --autoadapt
+    elif [ ~{pathogen} == "MPX" ] ; then
+       mkdir -p ~{pathogen}
+       freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
+       BARCODES=$(find ~{pathogen} -type f -name "*.csv")
+       freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --depthcutoff ~{depth_cut_off} --autoadapt
+    else
+       mkdir -p ~{pathogen}
+       freyja update --pathogen ~{pathogen} --outdir ~{pathogen}
+       BARCODES=$(find ~{pathogen} -type f -name "*.csv")
+       LINEAGES=$(find ~{pathogen} -type f -name "*.yml")
        freyja demix ~{samplename}.tsv ~{samplename}.depth --output ~{samplename}.demixed.tsv --pathogen ~{pathogen} --lineageyml ${LINEAGES} --barcodes ${BARCODES} --depthcutoff ~{depth_cut_off} --autoadapt
     fi
   >>>
