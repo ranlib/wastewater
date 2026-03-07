@@ -91,16 +91,16 @@ workflow wastewater {
     
     if ( run_centrifuge ) {
       call centrifuge.wf_centrifuge {
-	input:
-	read1 = wf_bbduk.clean_read1,
-	read2 = wf_bbduk.clean_read2,
-	samplename = samplenames[indx],
-	indexFiles = indexFiles,
-	docker = dockerImages["centrifuge"],
-	threads = threads,
-	memory = memory,
-	disk_size = disk_size,
-	disk_multiplier = disk_multiplier
+	      input:
+	      read1 = wf_bbduk.clean_read1,
+	      read2 = wf_bbduk.clean_read2,
+	      samplename = samplenames[indx],
+	      indexFiles = indexFiles,
+	      docker = dockerImages["centrifuge"],
+	      threads = threads,
+	      memory = memory,
+	      disk_size = disk_size,
+	      disk_multiplier = disk_multiplier
       }
     } 
       
