@@ -45,7 +45,7 @@ run_wastewater_pathogen_influenza:
 	miniwdl run --debug --dir test-wastewater_pathogen_influenza --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_influenza.json wf_wastewater_pathogen.wdl
 
 run_wastewater_pathogen_mpox:
-	miniwdl run --debug --dir test-wastewater_pathogen_mpox --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_mpxv.json wf_wastewater_pathogen.wdl
+	miniwdl run --debug --dir test-wastewater_pathogen_mpox --cfg miniwdl_production.cfg --input wf_wastewater_pathogen_mpox.json wf_wastewater_pathogen.wdl
 
 #
 # wastewater_influenza
